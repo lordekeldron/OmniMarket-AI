@@ -1,17 +1,53 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --color-slate-950: #141311;
+  --color-slate-900: #1c1a17;
+  --color-slate-800: #28251f;
+  --color-slate-700: #3c372f;
+  --color-slate-600: #5c554b;
+  --color-slate-500: #8a8174;
+  --color-slate-400: #b7aea2;
+  --color-slate-300: #ddd4c8;
+  --color-slate-200: #efe7dc;
+  --color-slate-100: #f7f3ee;
+  --color-indigo-950: #2c2118;
+  --color-indigo-900: #3d2c1e;
+  --color-indigo-800: #6b4428;
+  --color-indigo-700: #8a5430;
+  --color-indigo-600: #b co4532a;
+  --color-indigo-500: #c56a38;
+  --color-indigo-400: #e0a06a;
+  --color-indigo-300: #f0c7a4;
+  --color-indigo-200: #f6e0cc;
+}
+
 @layer base {
+  html {
+    color-scheme: dark;
+  }
+
   body {
-    background-color: #020617;
-    color: #f8fafc;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: #141311;
+    color: #f4efe8;
+    font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.011em;
+  }
+
+  h1, h2, h3 {
+    letter-spacing: -0.03em;
+  }
+
+  button, input, textarea, select {
+    font-family: inherit;
   }
 }
 
 @media print {
   body {
     background-color: #ffffff !important;
-    color: #0f172a !important;
+    color: #1c1917 !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
