@@ -12,34 +12,46 @@ import { ReportView } from './components/ReportView';
 import { BrandProfileModal } from './components/BrandProfileModal';
 import { SlideDeckModal } from './components/SlideDeckModal';
 
-import {
-  initialBrands,
-  sampleTrends,
-  sampleChannels,
-  sampleCompetitors,
-  sampleScheduledPosts,
-  defaultCampaignData,
-} from './data/mockData';
 import { BrandProfile, TrendData, ChannelPerformanceData, CompetitorData, ScheduledPost, CampaignCreative, MacroTrend, LookalikeSegment } from './types';
 import { optimizeChannelAllocations } from './utils/marketingMath';
 
+const emptyTrendData: TrendData = {
+  summary: '',
+  macroTrends: [],
+  viralHooks: [],
+  roiOpportunity: '',
+};
+
+const emptyCampaign: CampaignCreative = {
+  campaignName: '',
+  tagline: '',
+  concept: '',
+  channels: {
+    instagram: { hook: '', caption: '', cta: '', hashtags: [] },
+    tiktok: { hook: '', caption: '', cta: '' },
+    linkedin: { headline: '', copy: '', cta: '' },
+    googleAds: { headlines: [], descriptions: [] },
+  },
+  designDirectives: {
+    productDesign: { concept: '', colorPalette: [], visualStyle: '', recommendedElements: [] },
+    adBannerCreative: { mainHeadline: '', badgeText: '', ctaButtonText: '', visualPrompt: '' },
+  },
+  abTestVariants: [],
+  expectedMetrics: { estimatedCTR: '', estimatedCPA: '', projectedROAS: '' },
+};
+
 export default function App() {
-  // Brand Profiles State
-  const [brands, setBrands] = useState<BrandProfile[]>(initialBrands);
-  const [activeBrand, setActiveBrand] = useState<BrandProfile>(initialBrands[0]);
-
-  // Tab State
+  const [brands, setBrands] = useState<BrandProfile[]>([]);
+  const [activeBrand, setActiveBrand] = useState<BrandProfile | null>(null);
   const [activeTab, setActiveTab] = useState<string>('overview');
-
-  // Core Marketing Data State
-  const [trends, setTrends] = useState<TrendData>(sampleTrends[activeBrand.id] || sampleTrends.lumina);
-  const [channels, setChannels] = useState<ChannelPerformanceData[]>(sampleChannels);
-  const [competitors, setCompetitors] = useState<CompetitorData[]>(sampleCompetitors);
-  const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>(sampleScheduledPosts);
-  const [campaign, setCampaign] = useState<CampaignCreative>(defaultCampaignData);
+  const [trends, setTrends] = useState<TrendData>(emptyTrendData);
+  const [channels, setChannels] = useState<ChannelPerformanceData[]>([]);
+  const [competitors, setCompetitors] = useState<CompetitorData[]>([]);
+  const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>([]);
+  const [campaign, setCampaign] = useState<CampaignCreative>(emptyCampaign);
 
   // Modal States
-  const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
+  const [isBrandModalOpen, setIsBrandModalOpen] = useState(true);
   const [isSlideDeckOpen, setIsSlideDeckOpen] = useState(false);
   const [optimizationApplied, setOptimizationApplied] = useState(false);
   const [prefillTrendTopic, setPrefillTrendTopic] = useState<string | undefined>(undefined);
@@ -47,41 +59,8 @@ export default function App() {
   // Switch Brand Profile Handler
   const handleSelectBrand = (brand: BrandProfile) => {
     setActiveBrand(brand);
-    if (sampleTrends[brand.id]) {
-      setTrends(sampleTrends[brand.id]);
-    } else {
-      // Generate default trend summary for custom brand
-      setTrends({
-        summary: `Tendências e comportamento de consumo monitorados para ${brand.name} no setor de ${brand.industry}. O público ${brand.targetAudience} busca conveniência, personalização e autenticidade.`,
-        macroTrends: [
-          {
-            name: 'Compras em Vídeos Curtos (UGC)',
-            growthRate: '+64%',
-            sentiment: 'Positivo',
-            category: 'Social Commerce',
-            description: 'Formatos autênticos com criadores de nicho convertem 3x mais que anúncios genéricos.',
-            predictedImpact: 'Muito Alto',
-            recommendedAction: `Veicular criativos autênticos focados em: "${brand.valueProposition}"`,
-            relevantKeywords: ['#UGC', '#ReviewReal', '#Tendencia2026'],
-          },
-          {
-            name: 'Atendimento Instantâneo com IA',
-            growthRate: '+50%',
-            sentiment: 'Altamente Positivo',
-            category: 'Tecnológica',
-            description: 'Redução do tempo de resposta para menos de 1 minuto aumenta taxa de conversão em 45%.',
-            predictedImpact: 'Alto',
-            recommendedAction: 'Manter o assistente de suporte 24/7 ativo nas redes.',
-            relevantKeywords: ['#AtendimentoImediato', '#SuporteVIP'],
-          },
-        ],
-        viralHooks: [
-          `"O que você precisa saber antes de comprar qualquer produto de ${brand.industry}..."`,
-          `"Por que a ${brand.name} virou a escolha número 1 de quem busca qualidade..."`,
-        ],
-        roiOpportunity: 'Migrar 30% do orçamento para canais sociais de vídeo para capturar o pico de conversões.',
-      });
-    }
+    setTrends(emptyTrendData);
+    setCampaign(emptyCampaign);
   };
 
   // Save New Brand Profile
@@ -191,22 +170,39 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
-      {/* Navigation Header */}
-      <Navbar
-        brands={brands}
-        activeBrand={activeBrand}
-        onSelectBrand={handleSelectBrand}
-        onOpenNewBrandModal={() => setIsBrandModalOpen(true)}
-        activeTab={activeTab}
-        onSelectTab={setActiveTab}
-        onOpenSlideDeck={() => setIsSlideDeckOpen(true)}
-        onTriggerPrint={handleTriggerPrint}
-      />
+      {activeBrand && (
+        <Navbar
+          brands={brands}
+          activeBrand={activeBrand}
+          onSelectBrand={handleSelectBrand}
+          onOpenNewBrandModal={() => setIsBrandModalOpen(true)}
+          activeTab={activeTab}
+          onSelectTab={setActiveTab}
+          onOpenSlideDeck={() => setIsSlideDeckOpen(true)}
+          onTriggerPrint={handleTriggerPrint}
+        />
+      )}
 
-      {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {activeTab === 'overview' && (
-          <DashboardOverview
+        {!activeBrand ? (
+          <section className="min-h-[60vh] flex flex-col items-center justify-center text-center">
+            <p className="text-xs uppercase tracking-[0.2em] text-[#c56a38]">OmniMarket AI</p>
+            <h1 className="mt-4 text-3xl font-semibold text-[#f7f3ee]">Comece pelo perfil da sua marca</h1>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-[#b7aea2]">
+              Cadastre os dados da sua empresa para liberar análises, campanhas e relatórios baseados exclusivamente nas informações da sua plataforma.
+            </p>
+            <button
+              type="button"
+              onClick={() => setIsBrandModalOpen(true)}
+              className="mt-6 rounded-md bg-[#c56a38] px-4 py-2.5 text-sm font-medium text-[#1a120c] hover:bg-[#d27845]"
+            >
+              Adicionar perfil da marca
+            </button>
+          </section>
+        ) : (
+          <>
+            {activeTab === 'overview' && (
+              <DashboardOverview
             brand={activeBrand}
             channels={channels}
             trends={trends}
@@ -287,6 +283,8 @@ export default function App() {
             onTriggerPrint={handleTriggerPrint}
           />
         )}
+          </>
+        )}
       </main>
 
       {/* Footer */}
@@ -309,17 +307,18 @@ export default function App() {
         onSaveBrand={handleSaveBrand}
       />
 
-      {/* Interactive Presentation Slide Deck Modal */}
-      <SlideDeckModal
-        isOpen={isSlideDeckOpen}
-        onClose={() => setIsSlideDeckOpen(false)}
-        brand={activeBrand}
-        channels={channels}
-        trends={trends}
-        competitors={competitors}
-        campaign={campaign}
-        onTriggerPrint={handleTriggerPrint}
-      />
+      {activeBrand && (
+        <SlideDeckModal
+          isOpen={isSlideDeckOpen}
+          onClose={() => setIsSlideDeckOpen(false)}
+          brand={activeBrand}
+          channels={channels}
+          trends={trends}
+          competitors={competitors}
+          campaign={campaign}
+          onTriggerPrint={handleTriggerPrint}
+        />
+      )}
     </div>
   );
 }

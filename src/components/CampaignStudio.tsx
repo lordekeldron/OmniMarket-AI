@@ -37,11 +37,11 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
   prefillTrendTopic,
 }) => {
   // Campaign Form State
-  const [productFocus, setProductFocus] = useState(prefillTrendTopic || 'Linha Premium de Alfaiataria e Peças Essenciais');
-  const [objective, setObjective] = useState('Conversões & Vendas com Alto ROAS');
+  const [productFocus, setProductFocus] = useState(prefillTrendTopic || '');
+  const [objective, setObjective] = useState('');
   const [audience, setAudience] = useState(brand.targetAudience);
   const [tone, setTone] = useState(brand.tone);
-  const [budget, setBudget] = useState('R$ 12.000');
+  const [budget, setBudget] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeChannelTab, setActiveChannelTab] = useState<'instagram' | 'tiktok' | 'linkedin' | 'googleAds'>('instagram');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
@@ -50,10 +50,10 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
   const [format, setFormat] = useState<'1:1' | '9:16' | '16:9' | '3:1'>('1:1');
   const [visualTheme, setVisualTheme] = useState<'minimalist' | 'luxury' | 'cyber' | 'eco'>('luxury');
   const [productType, setProductType] = useState<'bottle' | 'box' | 'device' | 'bag'>('bottle');
-  const [headline, setHeadline] = useState(campaign.designDirectives?.adBannerCreative?.mainHeadline || 'Elegância Sem Esforço');
-  const [badgeText, setBadgeText] = useState(campaign.designDirectives?.adBannerCreative?.badgeText || 'Edição Limitada 2026');
-  const [ctaText, setCtaText] = useState(campaign.designDirectives?.adBannerCreative?.ctaButtonText || 'Comprar com Desconto');
-  const [priceTag, setPriceTag] = useState('Por apenas R$ 189,00');
+  const [headline, setHeadline] = useState(campaign.designDirectives?.adBannerCreative?.mainHeadline || '');
+  const [badgeText, setBadgeText] = useState(campaign.designDirectives?.adBannerCreative?.badgeText || '');
+  const [ctaText, setCtaText] = useState(campaign.designDirectives?.adBannerCreative?.ctaButtonText || '');
+  const [priceTag, setPriceTag] = useState('');
   const [accentColor, setAccentColor] = useState(brand.accentColor || '#4F46E5');
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

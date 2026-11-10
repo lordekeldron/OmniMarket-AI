@@ -170,8 +170,8 @@ export const GlobalTrendHeatmap: React.FC<GlobalTrendHeatmapProps> = ({ brand, o
             polygonSideColor={() => 'rgba(26, 18, 12, 0.45)'}
             polygonStrokeColor={() => 'rgba(247, 243, 238, 0.35)'}
             polygonsTransitionDuration={0}
-            onPolygonHover={(feature) => setHover((feature as CountryFeature) || null)}
-            onPolygonClick={(feature) => {
+            onPolygonHover={(feature: unknown) => setHover((feature as CountryFeature) || null)}
+            onPolygonClick={(feature: unknown) => {
               const props = (feature as CountryFeature | null)?.properties;
               if (!props) return;
               const top = scoresFor(props)[0];

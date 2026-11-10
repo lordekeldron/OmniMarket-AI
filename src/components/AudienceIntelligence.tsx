@@ -53,138 +53,13 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
   const [appliedId, setAppliedId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Default seed segments for instant display
-  const [segments, setSegments] = useState<LookalikeSegment[]>([
-    {
-      id: 'lookalike-high-ltv',
-      name: `Lookalike 1% Compradores de Alto LTV & Quiet Luxury`,
-      tier: '1% Super Afinado',
-      similarityPercentage: 96,
-      estimatedReach: '850k - 1.1M pessoas',
-      channelFocus: ['Instagram Reels', 'Meta Feed', 'WhatsApp Direct'],
-      projectedMetrics: {
-        estimatedCTR: '4.1%',
-        estimatedCPA: 'R$ 13,20',
-        projectedROAS: '5.8x',
-        conversionRate: '4.6%',
-      },
-      seedPersonaReference: 'Compradores Recorrentes com Ticket Médio > R$ 350',
-      psychographicTraits: [
-        'Apreciação por peças atemporais, corte refinado e consumo consciente',
-        'Alta sensibilidade à procedência dos materiais e transparência na cadeia têxtil',
-        'Rejeição ativa a fast-fashion barata e estampas chamativas',
-      ],
-      behavioralSignals: [
-        'Compras recorrentes online em e-commerces de moda e design autoral',
-        'Consumo diário de conteúdo em vídeo curto (Reels/Stories) de provador real',
-        'Interação frequente com selos de certificação e avaliações de clientes verificados',
-      ],
-      recommendedHook:
-        '"A elegância que você sente na pele, sem abrir mão do que realmente importa para o futuro."',
-      recommendedCTA: 'Explorar Coleção Cápsula VIP',
-      negativeExclusions: [
-        'Buscadores de cupons agressivos e liquidações genéricas',
-        'Público de marcas de ultra-fast-fashion com ticket baixo',
-      ],
-      platformTargetingCode: {
-        metaInterests: ['Moda sustentável', 'Design minimalista', 'Consumo consciente', 'Alfaiataria'],
-        tiktokBehaviors: [
-          'Engajou com criadores de lifestyle sustentável',
-          'Visualizou vídeos de moda até o final',
-        ],
-        googleKeywords: ['roupas sustentáveis luxo', 'alfaiataria feminina minimalista', 'moda ética'],
-      },
-    },
-    {
-      id: 'lookalike-video-engagers',
-      name: `Lookalike 2% Engajados em Vídeo UGC & Social Commerce`,
-      tier: '2-3% Balanceado',
-      similarityPercentage: 88,
-      estimatedReach: '2.1M - 2.6M pessoas',
-      channelFocus: ['TikTok Spark Ads', 'Instagram Reels'],
-      projectedMetrics: {
-        estimatedCTR: '3.6%',
-        estimatedCPA: 'R$ 15,80',
-        projectedROAS: '4.9x',
-        conversionRate: '3.7%',
-      },
-      seedPersonaReference:
-        'Usuários que assistiram mais de 75% dos criativos em vídeo no último mês',
-      psychographicTraits: [
-        'Geração digital que decide compra a partir de prova social de criadores reais',
-        'Busca por versatilidade: guarda-roupa cápsula inteligente de 3 peças e múltiplos looks',
-        'Impulso de compra ativado por praticidade e styling do dia a dia',
-      ],
-      behavioralSignals: [
-        'Salva vídeos de provador e dicas de combinação de roupas',
-        'Comenta em vídeos de micro-influenciadores perguntando sobre caimento e numeração',
-        'Finaliza compras pelo smartphone via PIX em menos de 3 minutos',
-      ],
-      recommendedHook:
-        '"Como montar 12 combinações sofisticadas com apenas 3 peças indispensáveis."',
-      recommendedCTA: 'Ver Provador Virtual',
-      negativeExclusions: ['Usuários sem histórico de compras online nos últimos 90 dias'],
-      platformTargetingCode: {
-        metaInterests: ['Compras online frequentes', 'Dicas de moda', 'Estilo pessoal'],
-        tiktokBehaviors: [
-          'Engajou com hashtags #ModaReal #Provador',
-          'Assistiu mais de 30s de vídeos de moda',
-        ],
-        googleKeywords: ['looks minimalistas trabalho', 'guarda roupa capsula feminino'],
-      },
-    },
-    {
-      id: 'lookalike-checkout-intent',
-      name: `Lookalike 1% Alta Intenção de Compra & Checkout`,
-      tier: '1% Super Afinado',
-      similarityPercentage: 94,
-      estimatedReach: '950k - 1.3M pessoas',
-      channelFocus: ['Google Shopping', 'Instagram Dynamic Retargeting'],
-      projectedMetrics: {
-        estimatedCTR: '4.4%',
-        estimatedCPA: 'R$ 12,40',
-        projectedROAS: '6.2x',
-        conversionRate: '5.1%',
-      },
-      seedPersonaReference: 'Usuários que adicionaram itens ao carrinho nos últimos 14 dias',
-      psychographicTraits: [
-        'Consumidores no momento decisivo da jornada, comparando custo-benefício e durabilidade',
-        'Foco em investimento de longo prazo: valorizam tecidos nobres como linho e algodão orgânico',
-      ],
-      behavioralSignals: [
-        'Pesquisas de alta intenção transacional por termos específicos de modelagem',
-        'Visita a páginas de tabela de medidas e política de troca facilitada',
-      ],
-      recommendedHook:
-        '"Feito para durar estações inteiras. Garantia de troca grátis na primeira compra."',
-      recommendedCTA: 'Garantir Minha Peça com Frete Grátis',
-      negativeExclusions: ['Rejeição a compradores com taxa de devolução acima de 40%'],
-      platformTargetingCode: {
-        metaInterests: ['E-commerce de moda', 'Peças exclusivas', 'Tecidos naturais'],
-        tiktokBehaviors: ['Clicou em links de produtos nas últimas 48 horas'],
-        googleKeywords: ['comprar blazer alfaiataria linho', 'camisa linho pura alfaiataria'],
-      },
-    },
-  ]);
-
-  const [aiSummary, setAiSummary] = useState<string>(
-    `Análise econométrica dos dados de engajamento de ${brand.name}: clusters de alto LTV respondem 3.2x mais a ganchos de autenticidade (vídeos UGC) e valorizam sustentabilidade comprovada, apresentando CPA 28% menor que a média da conta.`
-  );
-
-  const [keyInsights, setKeyInsights] = useState<string[]>([
-    'Segmentos 1% Lookalike demonstram ROAS médio de 5.8x, superando os públicos abertos em mais de 65%.',
-    'Exclusão de compradores de fast-fashion reduziu o CPA em 22% ao eliminar cliques de baixo ticket.',
-    'Sincronizar os criativos de vídeo UGC com o segmento Lookalike 2% potencializa a escala sem fadiga criativa.',
-  ]);
-
+  const [segments, setSegments] = useState<LookalikeSegment[]>([]);
+  const [aiSummary, setAiSummary] = useState('');
+  const [keyInsights, setKeyInsights] = useState<string[]>([]);
   const [overlapData, setOverlapData] = useState<{
     overlapPercentage: number;
     recommendation: string;
-  }>({
-    overlapPercentage: 11,
-    recommendation:
-      'Sobreposição baixa (11%) entre os 3 segmentos. Podem ser veiculados concomitantemente sem canibalização de lances.',
-  });
+  } | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -417,8 +292,8 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
           </div>
         </div>
 
-        {/* AI Behavioral Diagnostic Executive Summary */}
-        <div className="p-4 bg-slate-950 rounded-md border border-indigo-950 flex items-start gap-3">
+        {aiSummary && (
+          <div className="p-4 bg-slate-950 rounded-md border border-indigo-950 flex items-start gap-3">
           <span className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 shrink-0 mt-0.5">
             <Sparkles className="w-4 h-4" />
           </span>
@@ -427,8 +302,9 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
               Diagnóstico de Inteligência Comportamental (Gemini 3.8 Flash)
             </span>
             <p className="text-slate-300 leading-relaxed">{aiSummary}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Generated Lookalike Segments Grid */}
@@ -446,6 +322,11 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {segments.length === 0 && (
+            <p className="lg:col-span-3 rounded-md border border-dashed border-slate-800 p-6 text-sm text-slate-400">
+              Gere uma análise para criar segmentos com os dados da sua marca.
+            </p>
+          )}
           {segments.map((segment) => {
             const isApplied = appliedId === segment.id;
             const isCopied = copiedId === segment.id;
@@ -604,8 +485,8 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
         </div>
       </div>
 
-      {/* Audience Overlap Analysis & Strategic Insights */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {overlapData && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Overlap Matrix */}
         <div className="bg-slate-900 border border-slate-800 rounded-md p-5 space-y-3">
           <div className="flex items-center justify-between">
@@ -656,7 +537,8 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
             ))}
           </ul>
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 };

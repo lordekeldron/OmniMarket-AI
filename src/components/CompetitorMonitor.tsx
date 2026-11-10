@@ -29,7 +29,7 @@ export const CompetitorMonitor: React.FC<CompetitorMonitorProps> = ({
   onAddCompetitor,
   onSelectCounterStrategy,
 }) => {
-  const [selectedComp, setSelectedComp] = useState<CompetitorData>(competitors[0]);
+  const [selectedComp, setSelectedComp] = useState<CompetitorData | null>(competitors[0] ?? null);
   const [loadingAudit, setLoadingAudit] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
 
@@ -72,25 +72,15 @@ export const CompetitorMonitor: React.FC<CompetitorMonitorProps> = ({
     const newComp: CompetitorData = {
       id: 'comp_' + Date.now(),
       name: newCompName.trim(),
-      website: newCompWebsite.trim() || 'https://concorrente.com.br',
-      marketShare: '15%',
-      pricingStrategy: 'Precificação intermediária agressiva',
-      threatLevel: 'Média',
-      trafficShare: [
-        { channel: 'Meta Ads', share: '40%', threatLevel: 'Média' },
-        { channel: 'Google Search', share: '35%', threatLevel: 'Média' },
-        { channel: 'Orgânico', share: '25%', threatLevel: 'Baixa' },
-      ],
-      spottedAdHooks: [
-        `"Lançamento exclusivo da temporada em ${brand.industry}"`,
-        '"Compre agora com 10% OFF no primeiro pedido"',
-      ],
-      strengths: ['Presença de marca consolidada no nicho.'],
-      vulnerabilities: [
-        'Atendimento ao cliente impessoal e lento.',
-        'Pouca inovação em formatos de vídeo dinâmico.',
-      ],
-      counterStrategy: `Destacar atendimento humanizado e envio imediato contra ${newCompName}.`,
+      website: newCompWebsite.trim(),
+      marketShare: '',
+      pricingStrategy: '',
+      threatLevel: '',
+      trafficShare: [],
+      spottedAdHooks: [],
+      strengths: [],
+      vulnerabilities: [],
+      counterStrategy: '',
       keywordOpportunities: [
         {
           keyword: `alternativa para ${newCompName.toLowerCase()}`,
@@ -134,6 +124,12 @@ export const CompetitorMonitor: React.FC<CompetitorMonitorProps> = ({
         </button>
       </div>
 
+      {competitors.length === 0 && (
+        <div className="rounded-md border border-dashed border-slate-800 p-6 text-sm text-slate-400">
+          Adicione um concorrente para iniciar uma análise com dados da sua plataforma.
+        </div>
+      )}
+
       {/* Competitor Selector Tabs */}
       <div className="flex items-center gap-3 overflow-x-auto pb-2">
         {competitors.map((comp) => (
@@ -142,7 +138,7 @@ export const CompetitorMonitor: React.FC<CompetitorMonitorProps> = ({
             type="button"
             onClick={() => setSelectedComp(comp)}
             className={`px-4 py-3 rounded-xl border text-left transition-all shrink-0 flex items-center gap-3 min-w-[220px] ${
-              selectedComp.id === comp.id
+              selectedComp?.id === comp.id
                 ? 'bg-slate-800 border-indigo-500/80 shadow-md shadow-indigo-500/10'
                 : 'bg-slate-900 border-slate-800 hover:bg-slate-800/60 text-slate-300'
             }`}

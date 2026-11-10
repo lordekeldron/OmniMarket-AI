@@ -16,10 +16,10 @@ export const BrandProfileModal: React.FC<BrandProfileModalProps> = ({
   const [name, setName] = useState('');
   const [industry, setIndustry] = useState('');
   const [tagline, setTagline] = useState('');
-  const [tone, setTone] = useState('Sofisticado, moderno e focado em valor');
+  const [tone, setTone] = useState('');
   const [targetAudience, setTargetAudience] = useState('');
   const [valueProposition, setValueProposition] = useState('');
-  const [monthlyBudget, setMonthlyBudget] = useState(15000);
+  const [monthlyBudget, setMonthlyBudget] = useState<number | ''>('');
   const [instagram, setInstagram] = useState('');
   const [accentColor, setAccentColor] = useState('#6366F1');
 
@@ -27,17 +27,17 @@ export const BrandProfileModal: React.FC<BrandProfileModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || !industry.trim() || !tagline.trim() || !tone.trim() || !targetAudience.trim() || !valueProposition.trim() || monthlyBudget === '') return;
 
     const brand: BrandProfile = {
       id: 'brand_' + Date.now(),
       name: name.trim(),
-      industry: industry.trim() || 'Comércio & Serviços',
-      tagline: tagline.trim() || 'Inovação e qualidade em cada detalhe.',
+      industry: industry.trim(),
+      tagline: tagline.trim(),
       tone: tone.trim(),
-      targetAudience: targetAudience.trim() || 'Público consumidor geral',
-      valueProposition: valueProposition.trim() || 'Experiência superior e produtos confiáveis.',
-      monthlyBudget: Number(monthlyBudget) || 10000,
+      targetAudience: targetAudience.trim(),
+      valueProposition: valueProposition.trim(),
+      monthlyBudget: Number(monthlyBudget),
       currency: 'BRL',
       accentColor: accentColor,
       logoInitial: name.trim().slice(0, 2).toUpperCase(),
@@ -87,9 +87,10 @@ export const BrandProfileModal: React.FC<BrandProfileModalProps> = ({
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Setor de Atuação</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Setor de Atuação *</label>
               <input
                 type="text"
+                required
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value)}
                 placeholder="Ex: Dermocosméticos, Varejo, Tech"
@@ -99,9 +100,10 @@ export const BrandProfileModal: React.FC<BrandProfileModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Slogan ou Tagline</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Slogan ou Tagline *</label>
             <input
               type="text"
+              required
               value={tagline}
               onChange={(e) => setTagline(e.target.value)}
               placeholder="Ex: Beleza limpa formulada para a pele brasileira."
@@ -111,9 +113,10 @@ export const BrandProfileModal: React.FC<BrandProfileModalProps> = ({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Tom de Voz da IA</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Tom de Voz da IA *</label>
               <input
                 type="text"
+                required
                 value={tone}
                 onChange={(e) => setTone(e.target.value)}
                 placeholder="Ex: Científico, acolhedor, jovial"
@@ -121,22 +124,24 @@ export const BrandProfileModal: React.FC<BrandProfileModalProps> = ({
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Orçamento Mensal (R$)</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Orçamento Mensal (R$) *</label>
               <input
                 type="number"
                 min="1000"
                 step="500"
                 value={monthlyBudget}
-                onChange={(e) => setMonthlyBudget(Number(e.target.value))}
+                required
+                onChange={(e) => setMonthlyBudget(e.target.value ? Number(e.target.value) : '')}
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Público-Alvo Principal</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Público-Alvo Principal *</label>
             <input
               type="text"
+              required
               value={targetAudience}
               onChange={(e) => setTargetAudience(e.target.value)}
               placeholder="Ex: Mulheres 24-40 anos, rotina urbana, buscam praticidade e autocuidado."
@@ -145,9 +150,10 @@ export const BrandProfileModal: React.FC<BrandProfileModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1">Proposta Única de Valor (Diferencial)</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Proposta Única de Valor (Diferencial) *</label>
             <textarea
               rows={2}
+              required
               value={valueProposition}
               onChange={(e) => setValueProposition(e.target.value)}
               placeholder="Ex: Fórmulas livres de parabenos com eficácia comprovada em 14 dias."
