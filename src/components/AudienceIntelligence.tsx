@@ -276,7 +276,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
     <div className="space-y-6">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="p-3.5 bg-emerald-950/90 border border-emerald-500/50 rounded-xl text-emerald-200 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 shadow-lg animate-in fade-in duration-200">
+        <div className="p-3.5 bg-emerald-950/90 border border-emerald-500/50 rounded-md text-emerald-200 text-xs sm:text-sm font-medium flex items-center justify-between gap-3 shadow-lg animate-in fade-in duration-200">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>{toastMessage}</span>
@@ -292,18 +292,13 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
       )}
 
       {/* Header Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-slate-900 border border-slate-800 rounded-md p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
-              <Brain className="w-5 h-5" />
-            </span>
-            <h1 className="text-xl font-bold text-white">
-              Inteligência de Audiência & Modelagem Lookalike com Gemini
+            <h1 className="text-xl font-semibold text-[#f7f3ee]">
+              Audiência
             </h1>
-            <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              IA Preditiva de Audiências
-            </span>
+            
           </div>
           <p className="text-xs sm:text-sm text-slate-300">
             Mineração dos dados de engajamento de {brand.name} para identificar a persona semente de maior retorno e
@@ -316,7 +311,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
             type="button"
             onClick={handleGenerateLookalikes}
             disabled={loadingAi}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-900/50 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all whitespace-nowrap"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-md bg-[#c56a38] hover:bg-[#d27845] disabled:opacity-50 text-[#1a120c] text-xs sm:text-sm font-semibold transition-all whitespace-nowrap"
           >
             <Sparkles className={`w-4 h-4 ${loadingAi ? 'animate-spin' : ''}`} />
             <span>{loadingAi ? 'Analisando com Gemini...' : 'Gerar Segmentos Lookalike com IA'}</span>
@@ -325,11 +320,11 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
       </div>
 
       {/* Active Brand Persona & Seed Calibration Controls */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
+      <div className="bg-slate-900 border border-slate-800 rounded-md p-6 space-y-5">
         <div className="flex items-center justify-between pb-3 border-b border-slate-800">
           <div className="flex items-center gap-2">
             <Target className="w-4 h-4 text-indigo-400" />
-            <h2 className="text-base font-bold text-white">Parâmetros da Persona Semente & Calibração Lookalike</h2>
+            <h2 className="text-base font-semibold text-[#f7f3ee]">Parâmetros da Persona Semente & Calibração Lookalike</h2>
           </div>
           <span className="text-xs text-slate-400">
             Base: {brand.name} ({brand.industry})
@@ -345,7 +340,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
             <select
               value={seedPersona}
               onChange={(e) => setSeedPersona(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-md text-xs text-white focus:outline-none focus:border-indigo-500"
             >
               <option value="Compradores Recorrentes de Alto LTV (Ticket Médio > R$ 350)">
                 Compradores Recorrentes de Alto LTV (Ticket &gt; R$ 350)
@@ -378,7 +373,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                   onClick={() => setSimilarityTier(tier)}
                   className={`py-2 px-1 rounded-lg text-[11px] font-bold text-center transition-all ${
                     similarityTier === tier
-                      ? 'bg-indigo-600 text-white shadow-sm'
+                      ? 'bg-[#c56a38] text-[#1a120c] shadow-sm'
                       : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800'
                   }`}
                 >
@@ -410,7 +405,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                     | 'Google Search & Shopping'
                 )
               }
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-indigo-500"
+              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-md text-xs text-white focus:outline-none focus:border-indigo-500"
             >
               <option value="Meta Ads (Instagram & Facebook)">Meta Ads (Instagram & Facebook)</option>
               <option value="TikTok Ads">TikTok Ads (Spark Ads & Catalog)</option>
@@ -423,12 +418,12 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
         </div>
 
         {/* AI Behavioral Diagnostic Executive Summary */}
-        <div className="p-4 bg-slate-950 rounded-xl border border-indigo-950 flex items-start gap-3">
+        <div className="p-4 bg-slate-950 rounded-md border border-indigo-950 flex items-start gap-3">
           <span className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 shrink-0 mt-0.5">
             <Sparkles className="w-4 h-4" />
           </span>
           <div className="space-y-1 text-xs">
-            <span className="font-bold text-indigo-300 uppercase tracking-wider text-[11px] block">
+            <span className="font-bold text-indigo-300 text-[11px] block">
               Diagnóstico de Inteligência Comportamental (Gemini 3.8 Flash)
             </span>
             <p className="text-slate-300 leading-relaxed">{aiSummary}</p>
@@ -441,7 +436,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-indigo-400" />
-            <h2 className="text-base font-bold text-white">
+            <h2 className="text-base font-semibold text-[#f7f3ee]">
               Segmentos Lookalike de Alta Conversão ({segments.length})
             </h2>
           </div>
@@ -458,12 +453,12 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
             return (
               <div
                 key={segment.id}
-                className="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-2xl p-5 flex flex-col justify-between space-y-4 transition-all shadow-md"
+                className="bg-slate-900 border border-slate-800 hover:border-indigo-500/50 rounded-md p-5 flex flex-col justify-between space-y-4 transition-all shadow-md"
               >
                 {/* Segment Header */}
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-indigo-950 text-indigo-300 border border-indigo-800/60">
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-950 text-indigo-300 border border-indigo-800/60">
                       {segment.tier}
                     </span>
                     <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60">
@@ -479,12 +474,12 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                 </div>
 
                 {/* Economic Projections Matrix */}
-                <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800/80">
+                <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-md border border-slate-800/80">
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+                    <span className="text-[10px] font-bold text-slate-400 block mb-0.5">
                       ROAS Projetado
                     </span>
-                    <div className="text-lg font-extrabold text-emerald-400 font-mono">
+                    <div className="text-lg font-semibold text-emerald-400 font-mono">
                       {segment.projectedMetrics.projectedROAS}
                     </div>
                     <span className="text-[10px] text-slate-400">
@@ -493,10 +488,10 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                   </div>
 
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-0.5">
+                    <span className="text-[10px] font-bold text-slate-400 block mb-0.5">
                       CPA Estimado
                     </span>
-                    <div className="text-lg font-extrabold text-indigo-300 font-mono">
+                    <div className="text-lg font-semibold text-indigo-300 font-mono">
                       {segment.projectedMetrics.estimatedCPA}
                     </div>
                     <span className="text-[10px] text-slate-400">
@@ -508,7 +503,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                 {/* Behavioral & Psychographic Signals */}
                 <div className="space-y-3 text-xs">
                   <div>
-                    <span className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+                    <span className="text-[11px] font-bold text-slate-400 block mb-1">
                       Perfil Psicográfico:
                     </span>
                     <ul className="space-y-1">
@@ -522,7 +517,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                   </div>
 
                   <div>
-                    <span className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+                    <span className="text-[11px] font-bold text-slate-400 block mb-1">
                       Sinais Comportamentais de Alta Intenção:
                     </span>
                     <ul className="space-y-1">
@@ -537,7 +532,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
 
                   {/* Creative Hook Recommendation */}
                   <div className="p-2.5 bg-slate-950/70 border border-slate-800 rounded-lg space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-indigo-300 block">
+                    <span className="text-[10px] font-bold text-indigo-300 block">
                       Gancho de Criativo Recomendado:
                     </span>
                     <p className="text-[11px] text-slate-200 italic leading-relaxed">
@@ -551,7 +546,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
 
                   {/* Strategic Negative Exclusions */}
                   <div>
-                    <span className="text-[10px] font-bold uppercase text-amber-400 flex items-center gap-1 mb-1">
+                    <span className="text-[10px] font-bold text-amber-400 flex items-center gap-1 mb-1">
                       <ShieldAlert className="w-3 h-3" />
                       <span>Exclusões Negativas de Proteção:</span>
                     </span>
@@ -574,7 +569,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                     <button
                       type="button"
                       onClick={() => handleApplyToCampaign(segment)}
-                      className={`flex-1 py-2 px-3 rounded-xl font-bold text-xs text-white shadow-md transition-all flex items-center justify-center gap-1.5 ${
+                      className={`flex-1 py-2 px-3 rounded-md font-bold text-xs text-white transition-all flex items-center justify-center gap-1.5 ${
                         isApplied
                           ? 'bg-emerald-600 hover:bg-emerald-500'
                           : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/20'
@@ -587,7 +582,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                     <button
                       type="button"
                       onClick={() => handleExportSegment(segment)}
-                      className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+                      className="p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
                       title="Exportar Segmento em JSON para Gerenciador de Anúncios"
                     >
                       <Download className="w-4 h-4" />
@@ -596,7 +591,7 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
                     <button
                       type="button"
                       onClick={() => handleCopySpecs(segment)}
-                      className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
+                      className="p-2 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
                       title="Copiar especificações"
                     >
                       {isCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -612,11 +607,11 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
       {/* Audience Overlap Analysis & Strategic Insights */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Overlap Matrix */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+        <div className="bg-slate-900 border border-slate-800 rounded-md p-5 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <PieChart className="w-4 h-4 text-emerald-400" />
-              <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+              <h3 className="text-sm font-medium text-[#f7f3ee] tracking-wider">
                 Audience Overlap (Taxa de Sobreposição)
               </h3>
             </div>
@@ -644,10 +639,10 @@ export const AudienceIntelligence: React.FC<AudienceIntelligenceProps> = ({
         </div>
 
         {/* Strategic Lookalike Insights */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+        <div className="bg-slate-900 border border-slate-800 rounded-md p-5 space-y-3">
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-indigo-400" />
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            <h3 className="text-sm font-medium text-[#f7f3ee] tracking-wider">
               Insights Estratégicos de Audiência (Gemini)
             </h3>
           </div>
