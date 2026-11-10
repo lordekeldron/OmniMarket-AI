@@ -18,7 +18,7 @@ export default defineConfig(() => {
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
 
-      server.allowedHosts
+      server.allowedHosts = sb-4a29ot5f0xnb.vercel.run
       allowedHosts: [true]
     },
   };
