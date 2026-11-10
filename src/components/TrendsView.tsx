@@ -12,6 +12,7 @@ import {
   Compass
 } from 'lucide-react';
 import { BrandProfile, TrendData, MacroTrend } from '../types';
+import { GlobalTrendHeatmap } from './GlobalTrendHeatmap';
 
 interface TrendsViewProps {
   brand: BrandProfile;
@@ -69,6 +70,7 @@ export const TrendsView: React.FC<TrendsViewProps> = ({
       !customSearch.trim() ||
       t.name.toLowerCase().includes(customSearch.toLowerCase()) ||
       t.description.toLowerCase().includes(customSearch.toLowerCase()) ||
+      t.recommendedAction.toLowerCase().includes(customSearch.toLowerCase()) ||
       t.relevantKeywords.some((k) => k.toLowerCase().includes(customSearch.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
@@ -116,6 +118,22 @@ export const TrendsView: React.FC<TrendsViewProps> = ({
           </div>
         )}
       </div>
+
+      <GlobalTrendHeatmap
+        brand={brand}
+        onFocusTopic={(topic) => {
+          const query: Record<string, string> = {
+            'Vídeo curto': 'Reels',
+            'Quiet luxury': 'Quiet',
+            'IA no atendimento': 'IA',
+            Sustentabilidade: 'sustent',
+            'Social commerce': 'Social',
+            'Live shopping': 'Shopping',
+          };
+          setSelectedCategory('all');
+          setCustomSearch(query[topic] ?? topic);
+        }}
+      />
 
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
