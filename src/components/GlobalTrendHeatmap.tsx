@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import Globe from 'react-globe.gl';
 import { BrandProfile } from '../types';
 
-const REGIONS = ['Brasil', 'EUA', 'Europa', 'Ásia', 'LatAm', 'Oriente Médio'];
 const TOPICS = [
   'Vídeo curto',
   'Quiet luxury',
@@ -11,6 +11,21 @@ const TOPICS = [
   'Live shopping',
 ];
 
+const GEO_URL =
+  'https://unpkg.com/three-globe@2.31.1/example/country-polygons/ne_110m_admin_0_countries.geojson';
+const EARTH_URL = 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg';
+
+type CountryProps = {
+  NAME?: string;
+  ISO_A2?: string;
+  CONTINENT?: string;
+  SUBREGION?: string;
+};
+
+type CountryFeature = {
+  properties: CountryProps;
+};
+
 function hashSeed(input: string) {
   let h = 0;
   for (let i = 0; i < input.length; i += 1) {
@@ -19,14 +34,44 @@ function hashSeed(input: string) {
   return h;
 }
 
-function heatFor(brandKey: string, region: string, topic: string) {
-  const n = hashSeed(`${brandKey}|${region}|${topic}`);
+function marketOf(props: CountryProps) {
+  const iso = props.ISO_A2 || '';
+  const sub = props.SUBREGION || '';
+  const continent = props.CONTINENT || '';
+  if (iso === 'BR') return 'Brasil';
+  if (iso === 'US') return 'EUA';
+  if (continent === 'Europe') return 'Europa';
+  if (sub === 'Western Asia') return 'Oriente Médio';
+  if (continent === 'South America' || sub.includes('Central America') || sub === 'Caribbean') return 'LatAm';
+  if (continent === 'Asia') return 'Ásia';
+  if (continent === 'Africa') return 'África';
+  if (continent === 'Oceania' || continent === 'North America') return 'Oceania e Canadá';
+  return 'Outros';
+}
+
+function heatFor(brandKey: string, market: string, topic: string) {
+  const n = hashSeed(`${brandKey}|${market}|${topic}`);
   const bias =
-    (region === 'Brasil' && (topic === 'Vídeo curto' || topic === 'Social commerce') ? 18 : 0) +
-    (region === 'Europa' && topic === 'Sustentabilidade' ? 16 : 0) +
-    (region === 'Ásia' && topic === 'Live shopping' ? 20 : 0) +
-    (region === 'EUA' && topic === 'Quiet luxury' ? 12 : 0);
-  return 28 + (n % 58) + bias;
+    (market === 'Brasil' && (topic === 'Vídeo curto' || topic === 'Social commerce') ? 18 : 0) +
+    (market === 'Europa' && topic === 'Sustentabilidade' ? 16 : 0) +
+    (market === 'Ásia' && topic === 'Live shopping' ? 20 : 0) +
+    (market === 'EUA' && topic === 'Quiet luxury' ? 12 : 0) +
+    (market === 'LatAm' && topic === 'Vídeo curto' ? 10 : 0) +
+    (market === 'Oriente Médio' && topic === 'Quiet luxury' ? 8 : 0);
+  return Math.min(100, 28 + (n % 52) + bias);
+}
+
+function countryName(props: CountryProps) {
+  const iso = props.ISO_A2;
+  if (iso && iso !== '-99') {
+    try {
+      const label = new Intl.DisplayNames(['pt-BR'], { type: 'region' }).of(iso);
+      if (label) return label;
+    } catch {
+      /* keep the source name */
+    }
+  }
+  return props.NAME || 'País';
 }
 
 interface GlobalTrendHeatmapProps {
@@ -35,83 +80,128 @@ interface GlobalTrendHeatmapProps {
 }
 
 export const GlobalTrendHeatmap: React.FC<GlobalTrendHeatmapProps> = ({ brand, onFocusTopic }) => {
-  const [active, setActive] = useState<{ region: string; topic: string; score: number } | null>(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const globeRef = useRef<any>(null);
+  const [width, setWidth] = useState(720);
+  const [countries, setCountries] = useState<CountryFeature[]>([]);
+  const [hover, setHover] = useState<CountryFeature | null>(null);
+  const [loadError, setLoadError] = useState(false);
 
-  const cells = useMemo(() => {
-    return REGIONS.flatMap((region) =>
-      TOPICS.map((topic) => ({
-        region,
-        topic,
-        score: Math.min(100, heatFor(`${brand.id}:${brand.industry}`, region, topic)),
-      })),
-    );
-  }, [brand.id, brand.industry]);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => setWidth(el.clientWidth);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
-  const hottest = cells.reduce((best, cell) => (cell.score > best.score ? cell : best), cells[0]);
-  const selected = active ?? hottest;
+  useEffect(() => {
+    let cancelled = false;
+    fetch(GEO_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error('geo');
+        return res.json();
+      })
+      .then((data) => {
+        if (!cancelled) setCountries(data.features || []);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const controls = globeRef.current?.controls?.();
+    if (!controls) return;
+    controls.autoRotate = !hover;
+    controls.autoRotateSpeed = 0.45;
+  }, [hover, countries.length]);
+
+  const brandKey = `${brand.id}:${brand.industry}`;
+
+  const scoresFor = (props: CountryProps) => {
+    const market = marketOf(props);
+    return TOPICS.map((topic) => ({
+      topic,
+      score: heatFor(brandKey, market, topic),
+    })).sort((a, b) => b.score - a.score);
+  };
+
+  const capColor = useMemo(() => {
+    return (feature: object) => {
+      const props = (feature as CountryFeature).properties || {};
+      const top = heatFor(brandKey, marketOf(props), 'Vídeo curto');
+      const alpha = 0.18 + top / 140;
+      return `rgba(197, 106, 56, ${alpha.toFixed(3)})`;
+    };
+  }, [brandKey]);
+
+  const hoveredProps = hover?.properties;
+  const hoveredScores = hoveredProps ? scoresFor(hoveredProps) : [];
+  const hoveredMarket = hoveredProps ? marketOf(hoveredProps) : '';
 
   return (
-    <section className="space-y-4">
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="text-base font-semibold text-[#f7f3ee]">Mapa de calor global</h2>
-          <p className="text-[13px] text-[#8a8174]">
-            Intensidade de busca e conversa para {brand.name}. Clique numa célula para filtrar os temas.
-          </p>
-        </div>
-        <p className="text-[13px] text-[#cfc6ba]">
-          Pico: {hottest.topic} em {hottest.region} · {hottest.score}
+    <section className="space-y-3">
+      <div>
+        <h2 className="text-base font-semibold text-[#f7f3ee]">Globo de tendências</h2>
+        <p className="text-[13px] text-[#8a8174]">
+          Passe o mouse sobre um país para ver as tendências de {brand.name} naquele mercado.
         </p>
       </div>
 
-      <div className="overflow-x-auto">
-        <div
-          className="grid min-w-[640px] gap-1"
-          style={{ gridTemplateColumns: `120px repeat(${TOPICS.length}, minmax(0, 1fr))` }}
-        >
-          <div />
-          {TOPICS.map((topic) => (
-            <div key={topic} className="px-1 pb-1 text-[11px] text-[#b7aea2] leading-tight">
-              {topic}
-            </div>
-          ))}
-          {REGIONS.map((region) => (
-            <React.Fragment key={region}>
-              <div className="flex items-center text-[12px] text-[#efe7dc]">{region}</div>
-              {TOPICS.map((topic) => {
-                const cell = cells.find((c) => c.region === region && c.topic === topic)!;
-                const isOn = selected.region === region && selected.topic === topic;
-                return (
-                  <button
-                    key={`${region}-${topic}`}
-                    type="button"
-                    onClick={() => {
-                      setActive(cell);
-                      onFocusTopic(topic);
-                    }}
-                    title={`${region} · ${topic}: ${cell.score}`}
-                    className={`h-9 rounded-sm transition-transform ${isOn ? 'ring-1 ring-[#f7f3ee] scale-[1.03]' : ''}`}
-                    style={{ backgroundColor: `rgba(197, 106, 56, ${0.12 + cell.score / 115})` }}
-                  >
-                    <span className="sr-only">
-                      {region} {topic} {cell.score}
-                    </span>
-                    <span className="text-[11px] tabular-nums text-[#1a120c]/80">{cell.score}</span>
-                  </button>
-                );
-              })}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
+      <div ref={wrapRef} className="relative h-[520px] overflow-hidden rounded-md border border-white/10 bg-[#0c0b0a]">
+        {!loadError && (
+          <Globe
+            ref={globeRef}
+            width={width}
+            height={520}
+            backgroundColor="rgba(0,0,0,0)"
+            globeImageUrl={EARTH_URL}
+            atmosphereColor="#c56a38"
+            atmosphereAltitude={0.16}
+            polygonsData={countries}
+            polygonAltitude={0.012}
+            polygonCapColor={capColor}
+            polygonSideColor={() => 'rgba(26, 18, 12, 0.45)'}
+            polygonStrokeColor={() => 'rgba(247, 243, 238, 0.35)'}
+            polygonsTransitionDuration={0}
+            onPolygonHover={(feature) => setHover((feature as CountryFeature) || null)}
+            onPolygonClick={(feature) => {
+              const props = (feature as CountryFeature | null)?.properties;
+              if (!props) return;
+              const top = scoresFor(props)[0];
+              if (top) onFocusTopic(top.topic);
+            }}
+            polygonLabel={() => ''}
+          />
+        )}
 
-      <div className="flex items-center gap-3 text-[11px] text-[#8a8174]">
-        <span>Baixa</span>
-        <span className="h-2 w-28 rounded-sm" style={{ background: 'linear-gradient(90deg, rgba(197,106,56,0.15), rgba(197,106,56,0.95))' }} />
-        <span>Alta</span>
-        <span className="ml-auto text-[#cfc6ba]">
-          {selected.region}: {selected.topic} está em {selected.score}/100
-        </span>
+        {loadError && (
+          <p className="absolute inset-0 flex items-center justify-center text-sm text-[#b7aea2]">
+            Não foi possível carregar o mapa de países.
+          </p>
+        )}
+
+        {hoveredProps && (
+          <aside className="pointer-events-none absolute right-3 top-3 w-[min(100%-1.5rem,280px)] rounded-md border border-white/10 bg-[#161411]/92 p-3 backdrop-blur-sm">
+            <p className="text-[11px] text-[#b7aea2]">{hoveredMarket}</p>
+            <h3 className="text-[15px] font-semibold text-[#f7f3ee]">{countryName(hoveredProps)}</h3>
+            <ul className="mt-2 space-y-1.5">
+              {hoveredScores.slice(0, 4).map((item) => (
+                <li key={item.topic} className="flex items-center justify-between gap-3 text-[12px]">
+                  <span className="text-[#efe7dc]">{item.topic}</span>
+                  <span className="tabular-nums text-[#e0a06a]">{item.score}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[11px] text-[#8a8174]">Clique no país para filtrar a lista pelo tema mais forte.</p>
+          </aside>
+        )}
       </div>
     </section>
   );
