@@ -132,13 +132,10 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
   return (
     <div className="space-y-6">
       {/* Header and 1-Click Action */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-slate-900 border border-slate-800 rounded-md p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400">
-              <Zap className="w-5 h-5" />
-            </span>
-            <h1 className="text-xl font-bold text-white">Motor Preditivo de Otimização Contínua de ROI</h1>
+          <div className="mb-1">
+            <h1 className="text-xl font-semibold text-[#f7f3ee]">ROI</h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-300">
             Modelagem econométrica para realocar orçamentos em tempo real e maximizar o retorno marginal de {brand.name}.
@@ -149,7 +146,7 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
           <button
             type="button"
             onClick={handleReset}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs sm:text-sm font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs sm:text-sm font-medium transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Redefinir</span>
@@ -159,7 +156,7 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
             type="button"
             onClick={handleOneClickOptimize}
             disabled={loadingAi}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-900/50 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all whitespace-nowrap"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-md bg-[#c56a38] hover:bg-[#d27845] disabled:opacity-50 text-[#1a120c] text-xs sm:text-sm font-semibold transition-all whitespace-nowrap"
           >
             <Sparkles className={`w-4 h-4 ${loadingAi ? 'animate-spin' : ''}`} />
             <span>{loadingAi ? 'Calculando Otimização...' : applied ? 'Otimização Preditiva Ativa' : 'Aplicar Rebalanceamento Preditivo'}</span>
@@ -169,11 +166,11 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
 
       {/* Before / After Projection Matrix */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+        <div className="bg-slate-900 border border-slate-800 rounded-md p-5">
+          <span className="text-[11px] font-bold text-slate-400 block mb-1">
             ROAS Blended Atual
           </span>
-          <div className="text-2xl font-extrabold text-white font-mono">
+          <div className="text-2xl font-semibold text-white font-mono">
             {currentOverallROAS}x
           </div>
           <span className="text-xs text-slate-400 mt-1 block">
@@ -181,16 +178,16 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
           </span>
         </div>
 
-        <div className="bg-gradient-to-br from-slate-900 to-indigo-950/60 border border-indigo-800/80 rounded-xl p-5">
+        <div className="border border-white/10 rounded-md p-5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-300 block mb-1">
+            <span className="text-[11px] font-bold text-indigo-300 block mb-1">
               ROAS Projetado Pós-Otimização
             </span>
             <span className="text-xs font-bold text-emerald-400 font-mono">
               +{(simulatedROAS - currentOverallROAS).toFixed(2)}x
             </span>
           </div>
-          <div className="text-2xl font-extrabold text-emerald-400 font-mono">
+          <div className="text-2xl font-semibold text-emerald-400 font-mono">
             {simulatedROAS}x
           </div>
           <span className="text-xs text-indigo-200 mt-1 block">
@@ -198,11 +195,11 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
           </span>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+        <div className="bg-slate-900 border border-slate-800 rounded-md p-5">
+          <span className="text-[11px] font-bold text-slate-400 block mb-1">
             Receita Estimada Mensal
           </span>
-          <div className="text-2xl font-extrabold text-white font-mono">
+          <div className="text-2xl font-semibold text-white font-mono">
             R$ {Math.round(simulatedTotalRevenue).toLocaleString('pt-BR')}
           </div>
           <div className="flex items-center gap-1 text-xs text-emerald-400 mt-1">
@@ -220,10 +217,10 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
       />
 
       {/* Interactive Channel Rebalance Sliders & Recommendations */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+      <div className="bg-slate-900 border border-slate-800 rounded-md p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
           <div>
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
+            <h2 className="text-base font-semibold text-[#f7f3ee] flex items-center gap-2">
               <Sliders className="w-4 h-4 text-indigo-400" />
               <span>Simulador Interativo de Alocação de Verba</span>
             </h2>
@@ -250,7 +247,7 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
             const isUplift = delta > 0;
 
             return (
-              <div key={ch.id} className="p-4 bg-slate-800/60 rounded-xl border border-slate-800 space-y-3">
+              <div key={ch.id} className="p-4 bg-slate-800/60 rounded-md border border-slate-800 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
                     <span className="font-bold text-sm text-white">{ch.name}</span>
@@ -300,11 +297,11 @@ export const RoiEngine: React.FC<RoiEngineProps> = ({
       </div>
 
       {/* Real-time Telemetry Event Stream */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+      <div className="bg-slate-900 border border-slate-800 rounded-md p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
-            <h2 className="text-base font-bold text-white">Stream de Telemetria e Otimização em Tempo Real</h2>
+            <h2 className="text-base font-semibold text-[#f7f3ee]">Stream de Telemetria e Otimização em Tempo Real</h2>
           </div>
           <button
             type="button"
