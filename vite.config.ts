@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
-sb-4a29ot5f0xnb.vercel.run
+server.allowedHosts = sb-4a29ot5f0xnb.vercel.run = true
 
 export default defineConfig(() => {
   return {
