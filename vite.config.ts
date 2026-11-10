@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
+sb-4a29ot5f0xnb.vercel.run
+
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
