@@ -14,11 +14,11 @@ export default defineConfig(() => {
     server: {
       // Allow the Vercel preview hostnames while keeping Vite host validation enabled.
       allowedHosts: ['.vercel.run', '.v0.build'],
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modify—file watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      // The Vercel preview proxy does not keep Vite's HMR WebSocket open.
+      // Disable HMR to prevent the client from retrying a socket that cannot open.
+      hmr: false,
+      // Keep file watching available so the dev server still reloads on changes.
+      watch: {},
     },
   };
 });
