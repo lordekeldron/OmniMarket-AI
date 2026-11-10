@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import { GoogleGenAI } from '@google/genai';
+import { readFile } from 'node:fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -854,8 +855,34 @@ async function startServer() {
   if (!isProduction) {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        // The Vercel preview proxy does not keep Vite's HMR WebSocket open.
+        hmr: false,
+        watch: {},
+      },
       appType: 'spa',
+    });
+    app.use(async (req, res, next) => {
+      const acceptsHtml = req.method === 'GET' && req.headers.accept?.includes('text/html');
+
+      if (!acceptsHtml) {
+        next();
+        return;
+      }
+
+      try {
+        const template = await readFile(path.resolve(__dirname, 'index.html'), 'utf8');
+        const html = await vite.transformIndexHtml(req.originalUrl, template);
+        const withoutHmrClient = html.replace(
+          /<script type="module" src="\/@vite\/client"><\/script>\s*/g,
+          '',
+        );
+
+        res.status(200).type('html').send(withoutHmrClient);
+      } catch (error) {
+        next(error);
+      }
     });
     app.use(vite.middlewares);
   } else {
