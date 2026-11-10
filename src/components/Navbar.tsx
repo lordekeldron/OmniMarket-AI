@@ -10,10 +10,9 @@ import {
   Presentation,
   Plus,
   ChevronDown,
-  Layers,
-  ArrowUpRight,
   Printer,
-  Target
+  Target,
+  ArrowUpRight,
 } from 'lucide-react';
 import { BrandProfile } from '../types';
 
@@ -41,66 +40,50 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const navItems = [
-    { id: 'overview', label: 'Visão Geral', icon: BarChart3 },
-    { id: 'trends', label: 'Tendências de Consumo', icon: TrendingUp },
-    { id: 'campaigns', label: 'Campanhas & Design Studio', icon: Sparkles },
-    { id: 'audience', label: 'Inteligência de Audiência', icon: Target },
-    { id: 'roi', label: 'Otimizador de ROI', icon: ArrowUpRight },
-    { id: 'competitors', label: 'Monitor de Concorrentes', icon: Users },
-    { id: 'social', label: 'Automação Social', icon: Share2 },
-    { id: 'support', label: 'Chat com Clientes IA', icon: MessageSquare },
-    { id: 'report', label: 'Relatório Executivo', icon: FileText },
+    { id: 'overview', label: 'Visão geral', icon: BarChart3 },
+    { id: 'trends', label: 'Tendências', icon: TrendingUp },
+    { id: 'campaigns', label: 'Campanhas', icon: Sparkles },
+    { id: 'audience', label: 'Audiência', icon: Target },
+    { id: 'roi', label: 'ROI', icon: ArrowUpRight },
+    { id: 'competitors', label: 'Concorrentes', icon: Users },
+    { id: 'social', label: 'Social', icon: Share2 },
+    { id: 'support', label: 'Atendimento', icon: MessageSquare },
+    { id: 'report', label: 'Relatório', icon: FileText },
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-slate-900 border-b border-slate-800 text-white print:hidden">
-      {/* Top Brand Bar */}
+    <header className="sticky top-0 z-30 bg-[#161411]/95 backdrop-blur-md border-b border-white/8 text-white print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo & Brand Switcher */}
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20 text-lg">
+        <div className="flex items-center justify-between h-14">
+          <div className="flex items-center gap-5 min-w-0">
+            <div className="flex items-center gap-2.5 shrink-0">
+              <div className="w-8 h-8 rounded-md bg-[#c56a38] text-[#1a120c] flex items-center justify-center font-semibold text-sm">
                 OM
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-base tracking-tight text-white">OmniMarket AI</span>
-                  <span className="text-[11px] font-medium uppercase tracking-wider text-indigo-400 bg-indigo-950/80 px-2 py-0.5 rounded-md border border-indigo-800/60">
-                    Especialista
-                  </span>
-                </div>
-                <p className="text-xs text-slate-400 hidden sm:block">Inteligência de Marketing & Otimização de ROI</p>
+              <div className="leading-tight">
+                <div className="font-semibold text-[15px] text-[#f7f3ee]">OmniMarket</div>
+                <p className="text-[11px] text-[#8a8174] hidden md:block">Marketing e retorno</p>
               </div>
             </div>
 
-            {/* Brand Profile Selector Dropdown */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700/80 border border-slate-700 text-sm font-medium transition-colors"
+                className="flex items-center gap-2 px-2.5 py-1 rounded-md hover:bg-white/5 text-sm transition-colors"
                 aria-expanded={dropdownOpen}
                 aria-label="Selecionar marca ativa"
               >
-                <span
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ backgroundColor: activeBrand.accentColor }}
-                />
-                <span className="max-w-[140px] truncate text-slate-100">{activeBrand.name}</span>
-                <ChevronDown className="w-4 h-4 text-slate-400" />
+                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: activeBrand.accentColor }} />
+                <span className="max-w-[160px] truncate text-[#efe7dc]">{activeBrand.name}</span>
+                <ChevronDown className="w-3.5 h-3.5 text-[#8a8174]" />
               </button>
 
               {dropdownOpen && (
                 <>
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setDropdownOpen(false)}
-                  />
-                  <div className="absolute left-0 mt-2 w-72 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl py-2 z-50">
-                    <div className="px-3 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                      Alternar Perfil de Marca
-                    </div>
+                  <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+                  <div className="absolute left-0 mt-2 w-72 bg-[#221f1b] border border-white/10 rounded-lg shadow-xl py-1.5 z-50">
+                    <div className="px-3 py-1.5 text-[11px] text-[#8a8174]">Marcas</div>
                     {brands.map((b) => (
                       <button
                         key={b.id}
@@ -109,36 +92,31 @@ export const Navbar: React.FC<NavbarProps> = ({
                           onSelectBrand(b);
                           setDropdownOpen(false);
                         }}
-                        className={`w-full text-left px-3 py-2 flex items-center justify-between text-sm hover:bg-slate-700/60 transition-colors ${
-                          b.id === activeBrand.id ? 'bg-indigo-950/50 text-indigo-300 font-medium' : 'text-slate-200'
+                        className={`w-full text-left px-3 py-2 flex items-center justify-between text-sm hover:bg-white/5 ${
+                          b.id === activeBrand.id ? 'text-[#f7f3ee]' : 'text-[#ddd4c8]'
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
-                          <span
-                            className="w-2.5 h-2.5 rounded-full shrink-0"
-                            style={{ backgroundColor: b.accentColor }}
-                          />
-                          <div>
-                            <div className="text-slate-100">{b.name}</div>
-                            <div className="text-xs text-slate-400">{b.industry}</div>
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: b.accentColor }} />
+                          <div className="min-w-0">
+                            <div className="truncate">{b.name}</div>
+                            <div className="text-xs text-[#8a8174] truncate">{b.industry}</div>
                           </div>
                         </div>
-                        {b.id === activeBrand.id && (
-                          <span className="text-xs text-indigo-400 font-semibold">Ativa</span>
-                        )}
+                        {b.id === activeBrand.id && <span className="text-[11px] text-[#e0a06a]">Atual</span>}
                       </button>
                     ))}
-                    <div className="border-t border-slate-700/80 my-1 pt-1">
+                    <div className="border-t border-white/8 mt-1 pt-1">
                       <button
                         type="button"
                         onClick={() => {
                           setDropdownOpen(false);
                           onOpenNewBrandModal();
                         }}
-                        className="w-full text-left px-3 py-2 flex items-center gap-2 text-sm text-indigo-400 hover:bg-indigo-950/40 hover:text-indigo-300 transition-colors"
+                        className="w-full text-left px-3 py-2 flex items-center gap-2 text-sm text-[#e0a06a] hover:bg-white/5"
                       >
                         <Plus className="w-4 h-4" />
-                        <span>Adicionar Nova Marca</span>
+                        Nova marca
                       </button>
                     </div>
                   </div>
@@ -147,33 +125,29 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Action CTAs: Slides & Export */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={onOpenSlideDeck}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-medium transition-all shadow-md shadow-indigo-600/20"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[#efe7dc] hover:bg-white/5 text-sm"
               aria-label="Abrir apresentação em slides"
             >
               <Presentation className="w-4 h-4" />
-              <span className="hidden sm:inline">Apresentação de Slides</span>
-              <span className="sm:hidden">Slides</span>
+              <span className="hidden sm:inline">Slides</span>
             </button>
-
             <button
               type="button"
               onClick={onTriggerPrint}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-xs sm:text-sm font-medium transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-[#c56a38] text-[#1a120c] text-sm font-medium hover:bg-[#d27845]"
               aria-label="Exportar relatório em PDF"
             >
               <Printer className="w-4 h-4" />
-              <span className="hidden sm:inline">Exportar PDF</span>
+              <span className="hidden sm:inline">PDF</span>
             </button>
           </div>
         </div>
 
-        {/* Navigation Tabs Bar */}
-        <div className="flex items-center gap-1 overflow-x-auto py-2 scrollbar-none border-t border-slate-800/80">
+        <nav className="flex items-center gap-0.5 overflow-x-auto pb-1 -mb-px scrollbar-none">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -182,18 +156,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 key={item.id}
                 type="button"
                 onClick={() => onSelectTab(item.id)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 px-2.5 py-2 text-[13px] whitespace-nowrap border-b-2 transition-colors ${
                   isActive
-                    ? 'bg-slate-800 text-white border border-slate-700 shadow-sm'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                    ? 'border-[#c56a38] text-[#f7f3ee]'
+                    : 'border-transparent text-[#8a8174] hover:text-[#efe7dc]'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-400' : 'text-slate-400'}`} />
-                <span>{item.label}</span>
+                <Icon className="w-3.5 h-3.5" />
+                {item.label}
               </button>
             );
           })}
-        </div>
+        </nav>
       </div>
     </header>
   );
