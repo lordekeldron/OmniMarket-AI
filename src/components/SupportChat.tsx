@@ -16,24 +16,11 @@ interface SupportChatProps {
 }
 
 export const SupportChat: React.FC<SupportChatProps> = ({ brand }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'msg-1',
-      sender: 'agent',
-      role: 'assistant',
-      content: `Olá! Sou o especialista de atendimento e vendas da ${brand.name}. Como posso te ajudar hoje com dúvidas sobre produtos, entregas ou condições especiais?`,
-      timestamp: 'Agora',
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const predefinedQueries = [
-    'Vocês oferecem cupom de desconto para primeira compra?',
-    'Qual o prazo de entrega e política de trocas?',
-    'Como o produto de vocês se compara aos concorrentes do mercado?',
-    'Pode me dar uma recomendação personalizada para o meu caso?',
-  ];
+  const predefinedQueries: string[] = [];
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputText;

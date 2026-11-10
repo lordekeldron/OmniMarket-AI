@@ -55,7 +55,7 @@ export interface CompetitorData {
   website: string;
   marketShare: string;
   pricingStrategy: string;
-  threatLevel: 'Alta' | 'Média' | 'Baixa';
+  threatLevel: 'Alta' | 'Média' | 'Baixa' | '';
   trafficShare: { channel: string; share: string; threatLevel: string }[];
   spottedAdHooks: string[];
   strengths: string[];
