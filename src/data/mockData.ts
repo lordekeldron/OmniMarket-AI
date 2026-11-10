@@ -1,0 +1,318 @@
+import { BrandProfile, TrendData, ChannelPerformanceData, CompetitorData, ScheduledPost, CampaignCreative } from '../types';
+
+export const initialBrands: BrandProfile[] = [
+  {
+    id: 'lumina',
+    name: 'Lumina Atelier',
+    industry: 'Moda Sustentável & Luxo Acessível',
+    tagline: 'Elegância atemporal com responsabilidade ambiental.',
+    tone: 'Sofisticado, inspirador e transparente',
+    targetAudience: 'Mulheres e homens 26-44 anos, urbanos, valorizam alfaiataria moderna e produção ética.',
+    valueProposition: 'Peças em linho e algodão orgânico com durabilidade vitalícia e corte impecável.',
+    monthlyBudget: 28000,
+    currency: 'BRL',
+    accentColor: '#4F46E5',
+    logoInitial: 'LA',
+    socialHandles: {
+      instagram: '@lumina.atelier',
+      tiktok: '@lumina.style',
+      linkedin: 'lumina-atelier',
+      facebook: 'luminaatelieroficial',
+    },
+  },
+  {
+    id: 'ecoglow',
+    name: 'EcoGlow Dermocosméticos',
+    industry: 'Beleza Limpa & Skincare Clínico',
+    tagline: 'Fórmulas bioativas de alta performance para a pele real.',
+    tone: 'Científico, acolhedor, educativo e empoderador',
+    targetAudience: 'Consumidores 20-38 anos preocupados com autocuidado e dermocosméticos veganos.',
+    valueProposition: 'Séruns concentrados com ácido hialurônico vegetal e niacinamida 100% brasileira.',
+    monthlyBudget: 19500,
+    currency: 'BRL',
+    accentColor: '#059669',
+    logoInitial: 'EG',
+    socialHandles: {
+      instagram: '@ecoglow.skin',
+      tiktok: '@ecoglow_beauty',
+      facebook: 'ecoglowbrasil',
+    },
+  },
+  {
+    id: 'apexpulse',
+    name: 'ApexPulse Analytics',
+    industry: 'SaaS B2B & Inteligência de Negócios',
+    tagline: 'Decisões orientadas a dados em milissegundos.',
+    tone: 'Autoritário, direto, pragmático e visionário',
+    targetAudience: 'CEOs, CMOs e Diretores de E-commerce faturando acima de R$ 500k/mês.',
+    valueProposition: 'Painéis preditivos unificados que automatizam a atribuição multicanal e economizam 18h/semana.',
+    monthlyBudget: 35000,
+    currency: 'BRL',
+    accentColor: '#2563EB',
+    logoInitial: 'AP',
+    socialHandles: {
+      linkedin: 'apexpulse-analytics',
+      instagram: '@apexpulse.ai',
+    },
+  },
+];
+
+export const sampleTrends: Record<string, TrendData> = {
+  lumina: {
+    summary: 'A busca por quiet luxury e alfaiataria casual cresceu 58% entre consumidores de classe A/B, enquanto o ceticismo em relação a fast-fashion atinge níveis históricos.',
+    macroTrends: [
+      {
+        name: 'Guarda-Roupa Cápsula Inteligente',
+        growthRate: '+72%',
+        sentiment: 'Altamente Positivo',
+        category: 'Comportamental',
+        description: 'Consumidores preferem comprar 3 peças premium duráveis a 10 peças descartáveis de lojas populares.',
+        predictedImpact: 'Muito Alto',
+        recommendedAction: 'Lançar campanha de "3 Peças, 12 Looks" com vídeos curtos no Instagram Reels e TikTok.',
+        relevantKeywords: ['#ArmarioCapsula', '#MinimalistFashion', '#QuietLuxury', '#Alfaiataria'],
+      },
+      {
+        name: 'Rastreabilidade Têxtil por QR Code',
+        growthRate: '+46%',
+        sentiment: 'Positivo',
+        category: 'Sustentabilidade',
+        description: 'Mais de 62% dos compradores escaneiam o QR code na etiqueta para verificar a cadeia produtiva e pegada de carbono.',
+        predictedImpact: 'Alto',
+        recommendedAction: 'Adicionar selo de transparência de fábrica nos anúncios patrocinados.',
+        relevantKeywords: ['#ModaEtica', '#TransparenciaTotal', '#LinhoOrganico'],
+      },
+      {
+        name: 'Social Shopping com Provador Virtual',
+        growthRate: '+54%',
+        sentiment: 'Positivo',
+        category: 'Tecnológica',
+        description: 'Usuários que utilizam simulador de caimento no feed têm taxa de devolução 65% menor.',
+        predictedImpact: 'Alto',
+        recommendedAction: 'Integrar filtros interativos no Instagram Stories simulando combinações de tons.',
+        relevantKeywords: ['#ProvadorVirtual', '#CaimentoPerfeito', '#LooksReais'],
+      },
+    ],
+    viralHooks: [
+      '"Como se vestir bem todos os dias sem gastar 30 minutos na frente do armário..."',
+      '"A diferença absurda entre um linho sintético e o linho puro (teste de perto)..."',
+      '"Por que eu parei de comprar roupas baratas e nunca mais gastei tanto dinheiro..."',
+    ],
+    roiOpportunity: 'Campanhas em formato Reels demonstrando versatilidade de looks geram ROAS médio de 5.4x comparado a 2.6x de banners estáticos.',
+  },
+};
+
+export const sampleChannels: ChannelPerformanceData[] = [
+  {
+    id: 'ig',
+    name: 'Instagram Ads & Reels',
+    spend: 11200,
+    revenue: 58240,
+    clicks: 14200,
+    impressions: 485000,
+    conversions: 840,
+    ctr: 2.93,
+    cpa: 13.33,
+    roas: 5.2,
+  },
+  {
+    id: 'tiktok',
+    name: 'TikTok Spark Ads',
+    spend: 6400,
+    revenue: 29440,
+    clicks: 9800,
+    impressions: 340000,
+    conversions: 410,
+    ctr: 2.88,
+    cpa: 15.61,
+    roas: 4.6,
+  },
+  {
+    id: 'google',
+    name: 'Google Search & Shopping',
+    spend: 7800,
+    revenue: 28860,
+    clicks: 6500,
+    impressions: 120000,
+    conversions: 330,
+    ctr: 5.42,
+    cpa: 23.64,
+    roas: 3.7,
+  },
+  {
+    id: 'retargeting',
+    name: 'Meta Retargeting & WhatsApp',
+    spend: 2600,
+    revenue: 17680,
+    clicks: 3400,
+    impressions: 65000,
+    conversions: 245,
+    ctr: 5.23,
+    cpa: 10.61,
+    roas: 6.8,
+  },
+];
+
+export const sampleCompetitors: CompetitorData[] = [
+  {
+    id: 'comp1',
+    name: 'Zara Brasil / Inditex',
+    website: 'https://zara.com/br',
+    marketShare: '34%',
+    pricingStrategy: 'Fast-fashion com precificação intermediária e renovação quinzenal agressiva',
+    threatLevel: 'Alta',
+    trafficShare: [
+      { channel: 'Tráfego Direto & App', share: '44%', threatLevel: 'Alta' },
+      { channel: 'Google Shopping', share: '32%', threatLevel: 'Média' },
+      { channel: 'Meta Ads', share: '24%', threatLevel: 'Média' },
+    ],
+    spottedAdHooks: [
+      '"Nova Coleção Outono/Inverno já disponível nas lojas e online."',
+      '"Frete grátis em compras acima de R$ 299 até domingo."',
+    ],
+    strengths: [
+      'Cadeia logística global ultrarrápida com presença física maciça.',
+      'Reconhecimento espontâneo de marca altíssimo.',
+    ],
+    vulnerabilities: [
+      'Reclamações crescentes sobre durabilidade do tecido e sustentabilidade.',
+      'Atendimento pós-venda impessoal e burocracia para trocas online.',
+      'Falta de apelo para clientes que buscam alfaiataria sob medida sustentável.',
+    ],
+    counterStrategy: 'Anúncios de comparação implícita: "Roupas que duram anos, não lavagens". Destacar tecidos nobres com garantia de costura.',
+    keywordOpportunities: [
+      { keyword: 'alternativa sustentavel zara', searchVolume: '8.400/mês', difficulty: 'Baixa', opportunity: 'Campanha de Google Search com landing page educativa' },
+      { keyword: 'camisa linho puro alfaiataria', searchVolume: '19.200/mês', difficulty: 'Média', opportunity: 'Meta Ads com carrossel de detalhes de corte' },
+    ],
+  },
+  {
+    id: 'comp2',
+    name: 'Amaro',
+    website: 'https://amaro.com',
+    marketShare: '18%',
+    pricingStrategy: 'Digital native com posicionamento fashion tech e preços médios',
+    threatLevel: 'Média',
+    trafficShare: [
+      { channel: 'Instagram Ads', share: '50%', threatLevel: 'Alta' },
+      { channel: 'Google Search', share: '28%', threatLevel: 'Média' },
+      { channel: 'E-mail CRM', share: '22%', threatLevel: 'Baixa' },
+    ],
+    spottedAdHooks: [
+      '"Lookinhos perfeitos para o trabalho e happy hour no mesmo dia."',
+      '"Baixe o app e ganhe 15% OFF na primeira compra com cupom AMAROVIP."',
+    ],
+    strengths: ['Excelente interface de aplicativo e experiência de compra fluida.'],
+    vulnerabilities: [
+      'Preços aumentaram sem correspondente percepção de salto na qualidade do tecido.',
+      'Foco excessivo em tendências efêmeras que perdem apelo rapidamente.',
+    ],
+    counterStrategy: 'Posicionar Lumina como investimento atemporal ("Quiet Luxury com custo justo").',
+    keywordOpportunities: [
+      { keyword: 'moda feminina elegante trabalho', searchVolume: '32.000/mês', difficulty: 'Alta', opportunity: 'Vídeos de provador profissional no TikTok e Reels' },
+    ],
+  },
+];
+
+export const sampleScheduledPosts: ScheduledPost[] = [
+  {
+    id: 'post-1',
+    channel: 'instagram',
+    creativeTitle: 'Carrossel: Como montar 10 looks com 3 peças de linho',
+    caption: 'O segredo da elegância não está na quantidade de peças no seu armário, mas na qualidade do corte e na harmonia das texturas. 🌿 Deslize para ver como combinar nossa Camisa Saint-Tropez e Calça Pantalona em 10 ocasiões diferentes.\n\nQual combinação você usaria hoje? Comente abaixo!',
+    scheduledTime: 'Hoje às 18:30',
+    status: 'scheduled',
+    impressions: 24500,
+    engagementRate: '6.4%',
+    likes: 1820,
+  },
+  {
+    id: 'post-2',
+    channel: 'tiktok',
+    creativeTitle: 'Vídeo UGC: Teste de transparência e costura de perto',
+    caption: 'Comprei uma peça de linho na fast-fashion e uma na Lumina Atelier. O resultado do teste de lavagem me surpreendeu... 😱 #ModaConsciente #QualidadeReal #LuminaStyle',
+    scheduledTime: 'Amanhã às 12:15',
+    status: 'scheduled',
+    impressions: 48200,
+    engagementRate: '9.8%',
+    likes: 4210,
+  },
+  {
+    id: 'post-3',
+    channel: 'linkedin',
+    creativeTitle: 'Artigo: Por que o ESG na moda deixou de ser marketing e virou margem',
+    caption: 'Em nosso último relatório trimestral, marcas que implementaram rastreabilidade total de cadeia registraram aumento de 42% no LTV de clientes classe A/B. A transparência é o novo luxo.',
+    scheduledTime: 'Quinta-feira às 09:00',
+    status: 'draft',
+    impressions: 11200,
+    engagementRate: '4.8%',
+    likes: 640,
+  },
+  {
+    id: 'post-4',
+    channel: 'facebook',
+    creativeTitle: 'Vídeo Institucional: Os bastidores da nossa tecelagem',
+    caption: 'Do campo de algodão certificado até a costura final em nosso ateliê. Conheça as mãos que criam as peças que vestem sua confiança todos os dias.',
+    scheduledTime: 'Publicado há 2 dias',
+    status: 'published',
+    impressions: 18400,
+    engagementRate: '5.1%',
+    likes: 950,
+  },
+];
+
+export const defaultCampaignData: CampaignCreative = {
+  campaignName: 'Coleção Essência 2026: Elegância Sem Esforço',
+  tagline: 'O luxo do tempo bem vivido em peças que contam sua história.',
+  concept: 'Despertar o desejo pela sofisticação discreta através de contrastes arquitetônicos e caimento impecável, eliminando o consumo descartável.',
+  channels: {
+    instagram: {
+      hook: 'Você já reparou que as pessoas mais elegantes nunca parecem estar se esforçando?',
+      caption: `Descubra a Coleção Essência. Alfaiataria contemporânea em linho 100% puro e acabamentos manuais de alto padrão.\n\nCriado para acompanhar seu ritmo do café da manhã até o jantar executivo sem perder o frescor.\n\n✨ Toque suave e caimento sob medida\n🚚 Entrega expressa com primeira troca grátis\n🌿 Certificação internacional de sustentabilidade\n\nToque no botão e garanta sua peça com condições exclusivas de lançamento.`,
+      cta: 'Ver Coleção Exclusiva',
+      hashtags: ['#LuminaAtelier', '#QuietLuxury', '#AlfaiatariaContemporanea', '#ModaSustentavel'],
+    },
+    tiktok: {
+      hook: 'Pare de comprar roupas que encolhem na primeira lavada. Veja a diferença disso aqui...',
+      caption: '3 peças da Lumina que substituíram metade do meu guarda-roupa neste mês! O link está na bio com cupom ESSENCIA10 ✨ #AchadinhosDeLuxo #ModaElegante',
+      cta: 'Comprar com Desconto',
+    },
+    linkedin: {
+      headline: 'A reinvenção do vestuário corporativo: Como a elegância funcional impacta a produtividade',
+      copy: 'No ambiente executivo atual, o conforto térmico e a presença visual transmitem autoridade imediata. Apresentamos a linha Business Casual com tecidos termorreguladores.',
+      cta: 'Baixar Catálogo Corporativo',
+    },
+    googleAds: {
+      headlines: [
+        'Lumina Atelier Oficial',
+        'Alfaiataria em Linho Puro',
+        'Até 25% OFF de Lançamento',
+      ],
+      descriptions: [
+        'Corte sob medida e elegância atemporal. Peças feitas para durar a vida toda.',
+        'Envio expresso para todo o Brasil. Primeira troca grátis garantida.',
+      ],
+    },
+  },
+  designDirectives: {
+    productDesign: {
+      concept: 'Apresentação minimalista com iluminação natural matinal, sombras suaves e texturas orgânicas de pedra calcária e linho.',
+      colorPalette: ['#1E1B18', '#D4AF37', '#F5F5F0', '#4A5568'],
+      visualStyle: 'Fotografia editorial Vogue / Monocle, sem saturação excessiva, composição com respiro generoso.',
+      recommendedElements: ['Textura macro do linho', 'Selo Dourado Minimalista', 'Tipografia Serifada Elegante'],
+    },
+    adBannerCreative: {
+      mainHeadline: 'A Elegância da Simplicidade',
+      badgeText: 'Edição Limitada 2026',
+      ctaButtonText: 'Descobrir Agora',
+      visualPrompt: 'Campanha publicitária de moda de alto padrão, modelo elegante vestindo camisa de linho clássica em cenário arquitetônico minimalista.',
+    },
+  },
+  abTestVariants: [
+    { variant: 'A', focus: 'Racional (Durabilidade & Economia por Uso)', hook: 'Uma peça que dura 5 anos custa menos do que 10 que estragam em 3 meses.' },
+    { variant: 'B', focus: 'Emocional (Autoridade & Autoestima)', hook: 'A sensação inconfundível de entrar em qualquer sala e ser notado pelo bom gosto.' },
+  ],
+  expectedMetrics: {
+    estimatedCTR: '4.8%',
+    estimatedCPA: 'R$ 14,20',
+    projectedROAS: '5.4x',
+  },
+};
