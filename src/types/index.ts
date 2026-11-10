@@ -1,3 +1,12 @@
+export interface AgentDefinition {
+  id: 'lifecycle' | 'campaigns' | 'growth' | 'acquisition';
+  name: string;
+  source: string;
+  summary: string;
+  skills: string[];
+  color: string;
+}
+
 export interface BrandProfile {
   id: string;
   name: string;

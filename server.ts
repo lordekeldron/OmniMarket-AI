@@ -542,6 +542,47 @@ Retorne EXCLUSIVAMENTE um objeto JSON válido (sem texto fora do JSON) com a est
   }
 });
 
+// Role-based agents: each agent receives a focused operating brief instead of a generic model prompt.
+app.post('/api/ai/agent', async (req: Request, res: Response) => {
+  try {
+    const { agentId, objective, brandProfile } = req.body;
+    const roles: Record<string, { name: string; mission: string; skills: string[] }> = {
+      lifecycle: { name: 'Orquestrador de Lifecycle', mission: 'Desenhar segmentação, lead scoring e uma jornada acionável baseada em comportamento e consentimento.', skills: ['segmentação', 'lead scoring', 'jornadas', 'próxima melhor ação'] },
+      campaigns: { name: 'Operador de Campanhas', mission: 'Planejar uma campanha de relacionamento ou newsletter com hipótese, cadência, variações e medição.', skills: ['newsletter', 'entregabilidade', 'cadência', 'métricas'] },
+      growth: { name: 'Estrategista de Conversão', mission: 'Encontrar o maior ganho de conversão na oferta, no copy ou no fluxo e propor um experimento claro.', skills: ['CRO', 'copywriting', 'signup', 'onboarding'] },
+      acquisition: { name: 'Radar de Aquisição', mission: 'Priorizar um plano de aquisição combinando SEO, conteúdo, mídia, analytics, atribuição e concorrência.', skills: ['SEO', 'analytics', 'ads', 'competidores'] },
+    };
+    const role = roles[agentId];
+    if (!role || typeof objective !== 'string' || !objective.trim()) return res.status(400).json({ success: false, error: 'Agente ou objetivo inválido.' });
+    if (!ai) return res.status(503).json({ success: false, error: 'O motor de IA não está configurado neste ambiente.' });
+
+    const prompt = `Você é o ${role.name} da OmniMarket. Sua missão é ${role.mission}
+
+Skills de referência: ${role.skills.join(', ')}.
+
+Contexto da marca (use apenas o que foi informado):
+${JSON.stringify(brandProfile || {}, null, 2)}
+
+Objetivo do usuário:
+${objective}
+
+Responda em Português do Brasil, com voz sênior e natural. Não invente dados, resultados ou benchmarks. Se faltar contexto, sinalize a lacuna. Estruture em:
+1. Diagnóstico curto
+2. Plano priorizado com no máximo 4 ações
+3. Justificativa da prioridade
+4. Métrica e critério de revisão
+5. Pergunta de confirmação antes de qualquer ativação
+Nunca envie mensagens, altere contatos ou ative campanhas automaticamente.`;
+
+    const response = await withTimeout(ai.models.generateContent({ model: 'gemini-3.8-flash', contents: prompt }).then((result) => result.text?.trim() || ''), 9000, '');
+    if (!response) return res.status(504).json({ success: false, error: 'O agente não retornou uma resposta. Tente novamente.' });
+    return res.json({ success: true, agent: role.name, result: response });
+  } catch (error: any) {
+    console.error('Error in /api/ai/agent:', error);
+    return res.status(500).json({ success: false, error: 'Não foi possível executar o agente agora.' });
+  }
+});
+
 // Fallback generators for instant zero-lag loading & resilient behavior
 function getFallbackAudienceSegments(brandProfile?: any, seedPersona?: string, similarityTier?: string) {
   const brandName = brandProfile?.name || 'Lumina Atelier';

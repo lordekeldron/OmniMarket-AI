@@ -13,6 +13,7 @@ import {
   Printer,
   Target,
   ArrowUpRight,
+  Bot,
 } from 'lucide-react';
 import { BrandProfile } from '../types';
 
@@ -41,6 +42,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems = [
     { id: 'overview', label: 'Visão geral', icon: BarChart3 },
+    { id: 'agents', label: 'Agentes', icon: Bot },
     { id: 'trends', label: 'Tendências', icon: TrendingUp },
     { id: 'campaigns', label: 'Campanhas', icon: Sparkles },
     { id: 'audience', label: 'Audiência', icon: Target },
@@ -52,7 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-[#161411]/95 backdrop-blur-md border-b border-white/8 text-white print:hidden">
+    <header className="sticky top-0 z-30 bg-[#1c201d]/95 backdrop-blur-md border-b border-white/8 text-white print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           <div className="flex items-center gap-5 min-w-0">

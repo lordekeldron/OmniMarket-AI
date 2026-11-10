@@ -11,6 +11,9 @@ import { SupportChat } from './components/SupportChat';
 import { ReportView } from './components/ReportView';
 import { BrandProfileModal } from './components/BrandProfileModal';
 import { SlideDeckModal } from './components/SlideDeckModal';
+import { LandingPage } from './components/LandingPage';
+import { AuthModal } from './components/AuthModal';
+import { AgentWorkbench } from './components/AgentWorkbench';
 
 import { BrandProfile, TrendData, ChannelPerformanceData, CompetitorData, ScheduledPost, CampaignCreative, MacroTrend, LookalikeSegment } from './types';
 import { optimizeChannelAllocations } from './utils/marketingMath';
@@ -42,6 +45,8 @@ const emptyCampaign: CampaignCreative = {
 
 export default function App() {
   const [brands, setBrands] = useState<BrandProfile[]>([]);
+  const [showLanding, setShowLanding] = useState(true);
+  const [authMode, setAuthMode] = useState<'signup' | 'login' | null>(null);
   const [activeBrand, setActiveBrand] = useState<BrandProfile | null>(null);
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [trends, setTrends] = useState<TrendData>(emptyTrendData);
@@ -168,6 +173,23 @@ export default function App() {
     }, 200);
   };
 
+  if (showLanding) {
+    return (
+      <>
+        <LandingPage onSignUp={() => setAuthMode('signup')} onLogIn={() => setAuthMode('login')} />
+        <AuthModal
+          mode={authMode}
+          onClose={() => setAuthMode(null)}
+          onContinue={() => {
+            setAuthMode(null);
+            setShowLanding(false);
+            setIsBrandModalOpen(true);
+          }}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
       {activeBrand && (
@@ -201,6 +223,8 @@ export default function App() {
           </section>
         ) : (
           <>
+            {activeTab === 'agents' && activeBrand && <AgentWorkbench brand={activeBrand} />}
+
             {activeTab === 'overview' && (
               <DashboardOverview
             brand={activeBrand}
