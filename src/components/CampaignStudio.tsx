@@ -407,14 +407,11 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
   return (
     <div className="space-y-6">
       {/* AI Campaign Generator Form */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+      <div className="bg-slate-900 border border-slate-800 rounded-md p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-400">
-                <Sparkles className="w-5 h-5" />
-              </span>
-              <h1 className="text-xl font-bold text-white">Criador Automatizado de Campanhas & Artes</h1>
+              <h1 className="text-xl font-semibold text-[#f7f3ee]">Campanhas</h1>
             </div>
             <p className="text-xs sm:text-sm text-slate-300">
               Gere campanhas completas de alta conversão para múltiplos canais e artes publicitárias com IA.
@@ -425,7 +422,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
             type="button"
             onClick={handleGenerateCampaign}
             disabled={loading}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-900/60 text-white text-sm font-semibold shadow-lg shadow-indigo-600/30 transition-all whitespace-nowrap"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-[#c56a38] hover:bg-[#d27845] disabled:opacity-50 text-[#1a120c] text-sm font-semibold transition-all whitespace-nowrap"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             <span>{loading ? 'Criando Campanha...' : 'Gerar Campanha com IA'}</span>
@@ -496,13 +493,13 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
       </div>
 
       {/* Generated Creative Summary Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+      <div className="bg-slate-900 border border-slate-800 rounded-md p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400">
+            <span className="text-[11px] font-bold text-indigo-400">
               Campanha Ativa
             </span>
-            <h2 className="text-xl font-extrabold text-white mt-0.5">
+            <h2 className="text-xl font-semibold text-white mt-0.5">
               {campaign.campaignName}
             </h2>
             <p className="text-xs text-slate-300 italic mt-1">
@@ -511,15 +508,15 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
           </div>
 
           <div className="flex items-center gap-6 text-xs">
-            <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60">
+            <div className="p-3 bg-slate-800/80 rounded-md border border-slate-700/60">
               <span className="text-slate-400 block text-[10px] uppercase">CTR Estimado</span>
               <strong className="text-emerald-400 font-mono text-sm">{campaign.expectedMetrics?.estimatedCTR || '3.8%'}</strong>
             </div>
-            <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60">
+            <div className="p-3 bg-slate-800/80 rounded-md border border-slate-700/60">
               <span className="text-slate-400 block text-[10px] uppercase">CPA Previsto</span>
               <strong className="text-indigo-300 font-mono text-sm">{campaign.expectedMetrics?.estimatedCPA || 'R$ 16,80'}</strong>
             </div>
-            <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60">
+            <div className="p-3 bg-slate-800/80 rounded-md border border-slate-700/60">
               <span className="text-slate-400 block text-[10px] uppercase">ROAS Projetado</span>
               <strong className="text-emerald-400 font-mono text-sm">{campaign.expectedMetrics?.projectedROAS || '4.8x'}</strong>
             </div>
@@ -535,9 +532,9 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Multi-Channel Copywriting Hub (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-md p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-medium text-[#f7f3ee] flex items-center gap-2">
                 <Share2 className="w-4 h-4 text-indigo-400" />
                 <span>Copys Prontas por Canal</span>
               </h3>
@@ -558,7 +555,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
                   onClick={() => setActiveChannelTab(c.id as any)}
                   className={`py-1.5 text-xs font-semibold rounded-lg transition-colors ${
                     activeChannelTab === c.id
-                      ? 'bg-indigo-600 text-white'
+                      ? 'bg-[#c56a38] text-[#1a120c]'
                       : 'text-slate-400 hover:text-white'
                   }`}
                 >
@@ -571,17 +568,17 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
             {activeChannelTab === 'instagram' && (
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+                  <label className="text-[11px] font-bold text-slate-400 block mb-1">
                     Gancho de Parada (Primeiros 3s)
                   </label>
-                  <div className="p-3 bg-slate-800/80 rounded-xl text-xs text-indigo-200 border border-slate-700/60 font-medium">
+                  <div className="p-3 bg-slate-800/80 rounded-md text-xs text-indigo-200 border border-slate-700/60 font-medium">
                     {campaign.channels.instagram.hook}
                   </div>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-[11px] font-bold uppercase text-slate-400">
+                    <label className="text-[11px] font-bold text-slate-400">
                       Legenda Completa com Gatilhos
                     </label>
                     <button
@@ -593,13 +590,13 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
                       <span>{copiedKey === 'ig-caption' ? 'Copiado!' : 'Copiar'}</span>
                     </button>
                   </div>
-                  <div className="p-3 bg-slate-800/80 rounded-xl text-xs text-slate-200 border border-slate-700/60 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
+                  <div className="p-3 bg-slate-800/80 rounded-md text-xs text-slate-200 border border-slate-700/60 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
                     {campaign.channels.instagram.caption}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+                  <label className="text-[11px] font-bold text-slate-400 block mb-1">
                     Botão de Ação (CTA)
                   </label>
                   <div className="p-2.5 bg-indigo-950/60 border border-indigo-800 rounded-lg text-xs font-semibold text-indigo-300">
@@ -620,16 +617,16 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
             {activeChannelTab === 'tiktok' && (
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+                  <label className="text-[11px] font-bold text-slate-400 block mb-1">
                     Roteiro / Gancho Viral
                   </label>
-                  <div className="p-3 bg-slate-800/80 rounded-xl text-xs text-amber-200 border border-slate-700/60">
+                  <div className="p-3 bg-slate-800/80 rounded-md text-xs text-amber-200 border border-slate-700/60">
                     {campaign.channels.tiktok.hook}
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-[11px] font-bold uppercase text-slate-400">Legenda TikTok</label>
+                    <label className="text-[11px] font-bold text-slate-400">Legenda TikTok</label>
                     <button
                       type="button"
                       onClick={() => copyToClipboard(campaign.channels.tiktok.caption, 'tt-caption')}
@@ -639,7 +636,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
                       <span>{copiedKey === 'tt-caption' ? 'Copiado!' : 'Copiar'}</span>
                     </button>
                   </div>
-                  <div className="p-3 bg-slate-800/80 rounded-xl text-xs text-slate-200 border border-slate-700/60">
+                  <div className="p-3 bg-slate-800/80 rounded-md text-xs text-slate-200 border border-slate-700/60">
                     {campaign.channels.tiktok.caption}
                   </div>
                 </div>
@@ -649,14 +646,14 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
             {activeChannelTab === 'linkedin' && (
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Título B2B / Autoridade</label>
-                  <div className="p-3 bg-slate-800/80 rounded-xl text-xs font-semibold text-white border border-slate-700/60">
+                  <label className="text-[11px] font-bold text-slate-400 block mb-1">Título B2B / Autoridade</label>
+                  <div className="p-3 bg-slate-800/80 rounded-md text-xs font-semibold text-white border border-slate-700/60">
                     {campaign.channels.linkedin.headline}
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-[11px] font-bold uppercase text-slate-400">Texto Corporativo</label>
+                    <label className="text-[11px] font-bold text-slate-400">Texto Corporativo</label>
                     <button
                       type="button"
                       onClick={() => copyToClipboard(campaign.channels.linkedin.copy, 'li-copy')}
@@ -666,7 +663,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
                       <span>{copiedKey === 'li-copy' ? 'Copiado!' : 'Copiar'}</span>
                     </button>
                   </div>
-                  <div className="p-3 bg-slate-800/80 rounded-xl text-xs text-slate-200 border border-slate-700/60 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
+                  <div className="p-3 bg-slate-800/80 rounded-md text-xs text-slate-200 border border-slate-700/60 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
                     {campaign.channels.linkedin.copy}
                   </div>
                 </div>
@@ -676,7 +673,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
             {activeChannelTab === 'googleAds' && (
               <div className="space-y-3 pt-2">
                 <div>
-                  <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Títulos Responsivos (30 Caracteres)</label>
+                  <label className="text-[11px] font-bold text-slate-400 block mb-1">Títulos Responsivos (30 Caracteres)</label>
                   <div className="space-y-1.5">
                     {campaign.channels.googleAds.headlines.map((hl, hidx) => (
                       <div key={hidx} className="p-2 bg-slate-800 rounded-lg text-xs font-mono text-emerald-300 border border-slate-700">
@@ -686,7 +683,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
                   </div>
                 </div>
                 <div>
-                  <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Descrições (90 Caracteres)</label>
+                  <label className="text-[11px] font-bold text-slate-400 block mb-1">Descrições (90 Caracteres)</label>
                   <div className="space-y-1.5">
                     {campaign.channels.googleAds.descriptions.map((desc, didx) => (
                       <div key={didx} className="p-2.5 bg-slate-800 rounded-lg text-xs text-slate-200 border border-slate-700">
@@ -700,9 +697,9 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
           </div>
 
           {/* A/B Test Quick Summary Box */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div className="bg-slate-900 border border-slate-800 rounded-md p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <h3 className="text-sm font-medium text-[#f7f3ee] flex items-center gap-2">
                 <Trophy className="w-4 h-4 text-emerald-400" />
                 <span>Simulador de Teste A/B Preditivo</span>
               </h3>
@@ -721,7 +718,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
 
             <div className="space-y-2">
               {campaign.abTestVariants.slice(0, 2).map((v, vidx) => (
-                <div key={vidx} className="p-2.5 bg-slate-800/70 rounded-xl border border-slate-800">
+                <div key={vidx} className="p-2.5 bg-slate-800/70 rounded-md border border-slate-800">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-bold text-indigo-400">Variante {v.variant}</span>
                     <span className="text-[10px] text-slate-400">{v.focus}</span>
@@ -735,7 +732,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
 
             <a
               href="#simulated-ab-tool"
-              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-slate-800 hover:bg-indigo-600 text-xs font-semibold text-slate-200 hover:text-white transition-all text-center"
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-md bg-slate-800 hover:bg-indigo-600 text-xs font-semibold text-slate-200 hover:text-white transition-all text-center"
             >
               <Trophy className="w-3.5 h-3.5 text-emerald-400" />
               <span>Simular Coorte Preditiva de 10.000 Impressões</span>
@@ -744,12 +741,12 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
         </div>
 
         {/* Right: Interactive Product Design & Ad Creative Canvas Studio (7 cols) */}
-        <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
+        <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-md p-6 space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
             <div>
               <div className="flex items-center gap-2">
                 <Palette className="w-4 h-4 text-indigo-400" />
-                <h3 className="text-base font-bold text-white">Estúdio de Design de Produto & Artes</h3>
+                <h3 className="text-base font-semibold text-[#f7f3ee]">Estúdio de Design de Produto & Artes</h3>
               </div>
               <p className="text-xs text-slate-400">Personalize o design visual e exporte em alta resolução PNG</p>
             </div>
@@ -757,7 +754,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
             <button
               type="button"
               onClick={handleDownloadImage}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold shadow-md transition-all self-start sm:self-auto"
+              className="flex items-center gap-2 px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold transition-all self-start sm:self-auto"
             >
               <Download className="w-4 h-4" />
               <span>Baixar Arte (PNG)</span>
@@ -767,7 +764,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
           {/* Control Bar: Format & Theme */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Formato da Arte</label>
+              <label className="text-[11px] font-bold text-slate-400 block mb-1">Formato da Arte</label>
               <select
                 value={format}
                 onChange={(e) => setFormat(e.target.value as any)}
@@ -781,7 +778,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Tema Visual</label>
+              <label className="text-[11px] font-bold text-slate-400 block mb-1">Tema Visual</label>
               <select
                 value={visualTheme}
                 onChange={(e) => setVisualTheme(e.target.value as any)}
@@ -795,7 +792,7 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Modelo do Produto</label>
+              <label className="text-[11px] font-bold text-slate-400 block mb-1">Modelo do Produto</label>
               <select
                 value={productType}
                 onChange={(e) => setProductType(e.target.value as any)}
@@ -850,10 +847,10 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
           </div>
 
           {/* Live Canvas Artboard Preview */}
-          <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center min-h-[360px] overflow-hidden">
+          <div className="p-4 bg-slate-950 rounded-md border border-slate-800 flex items-center justify-center min-h-[360px] overflow-hidden">
             <canvas
               ref={canvasRef}
-              className={`max-w-full rounded-xl shadow-2xl transition-all duration-300 ${
+              className={`max-w-full rounded-md shadow-2xl transition-all duration-300 ${
                 format === '9:16'
                   ? 'h-[440px] w-auto'
                   : format === '3:1'
@@ -864,9 +861,9 @@ export const CampaignStudio: React.FC<CampaignStudioProps> = ({
           </div>
 
           {/* AI Photorealistic Prompt Recommendation */}
-          <div className="p-3.5 bg-slate-800/60 rounded-xl border border-slate-800">
+          <div className="p-3.5 bg-slate-800/60 rounded-md border border-slate-800">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">
+              <span className="text-[10px] font-bold text-indigo-400">
                 Prompt Fotográfico para IA de Imagens
               </span>
               <button
