@@ -195,3 +195,73 @@ export interface EngagementSignalSummary {
   topConvertingCreative: string;
   intentScore: number;
 }
+
+export interface GoogleTrendRegion {
+  name: string;
+  code: string;
+  searchVolumeIndex: number; // 0-100
+  growthRate: string; // e.g. "+84%"
+  isBreakout?: boolean;
+  topRisingQuery: string;
+  lat: number;
+  lng: number;
+  opportunityScore: number; // 0-100
+}
+
+export interface GoogleTrendCountry {
+  name: string;
+  code: string; // BR, US, UK, etc.
+  searchVolumeIndex: number;
+  growthRate: string;
+  sentiment: string;
+  lat: number;
+  lng: number;
+  regions: GoogleTrendRegion[];
+}
+
+export interface GoogleTrendSearchData {
+  query: string;
+  category: string;
+  selectedCountry: string;
+  selectedRegion?: string;
+  timeRange: string;
+  globalInterestIndex: number;
+  breakoutQueries: {
+    term: string;
+    growth: string;
+    category: string;
+    searchIntent: 'Transacional' | 'Informacional' | 'Comercial' | 'Navegacional';
+  }[];
+  relatedTopics: {
+    title: string;
+    type: string;
+    relevanceScore: number;
+  }[];
+  interestOverTime: {
+    period: string;
+    volume: number;
+  }[];
+  countries: GoogleTrendCountry[];
+  marketingTakeaway: string;
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  company?: string;
+  role?: string;
+  createdAt: string;
+  lastLoginAt: string;
+}
+
+export interface UserWorkspaceData {
+  user: UserProfile;
+  brands: BrandProfile[];
+  activeBrandId: string | null;
+  channels?: ChannelPerformanceData[];
+  competitors?: CompetitorData[];
+  scheduledPosts?: ScheduledPost[];
+  campaign?: CampaignCreative;
+  updatedAt: string;
+}

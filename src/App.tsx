@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { DashboardOverview } from './components/DashboardOverview';
 import { TrendsView } from './components/TrendsView';
@@ -15,8 +15,25 @@ import { LandingPage } from './components/LandingPage';
 import { AuthModal } from './components/AuthModal';
 import { AgentWorkbench } from './components/AgentWorkbench';
 
-import { BrandProfile, TrendData, ChannelPerformanceData, CompetitorData, ScheduledPost, CampaignCreative, MacroTrend, LookalikeSegment } from './types';
+import {
+  BrandProfile,
+  TrendData,
+  ChannelPerformanceData,
+  CompetitorData,
+  ScheduledPost,
+  CampaignCreative,
+  MacroTrend,
+  LookalikeSegment,
+  UserProfile,
+} from './types';
 import { optimizeChannelAllocations } from './utils/marketingMath';
+import {
+  getCurrentSession,
+  clearCurrentSession,
+  loadUserWorkspace,
+  saveUserWorkspace,
+  registerOrUpdateUser,
+} from './utils/storage';
 
 const emptyTrendData: TrendData = {
   summary: '',
@@ -44,22 +61,122 @@ const emptyCampaign: CampaignCreative = {
 };
 
 export default function App() {
-  const [brands, setBrands] = useState<BrandProfile[]>([]);
-  const [showLanding, setShowLanding] = useState(true);
+  // Active authenticated user session
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => getCurrentSession());
+  const [showLanding, setShowLanding] = useState<boolean>(() => !getCurrentSession());
   const [authMode, setAuthMode] = useState<'signup' | 'login' | null>(null);
-  const [activeBrand, setActiveBrand] = useState<BrandProfile | null>(null);
+
+  // Workspace data loaded from persistent storage
+  const [brands, setBrands] = useState<BrandProfile[]>(() => {
+    const session = getCurrentSession();
+    if (session) {
+      const ws = loadUserWorkspace(session.id);
+      return ws?.brands || [];
+    }
+    return [];
+  });
+
+  const [activeBrand, setActiveBrand] = useState<BrandProfile | null>(() => {
+    const session = getCurrentSession();
+    if (session) {
+      const ws = loadUserWorkspace(session.id);
+      if (ws?.brands && ws.brands.length > 0) {
+        return ws.brands.find((b) => b.id === ws.activeBrandId) || ws.brands[0];
+      }
+    }
+    return null;
+  });
+
   const [activeTab, setActiveTab] = useState<string>('overview');
   const [trends, setTrends] = useState<TrendData>(emptyTrendData);
-  const [channels, setChannels] = useState<ChannelPerformanceData[]>([]);
-  const [competitors, setCompetitors] = useState<CompetitorData[]>([]);
-  const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>([]);
-  const [campaign, setCampaign] = useState<CampaignCreative>(emptyCampaign);
+
+  const [channels, setChannels] = useState<ChannelPerformanceData[]>(() => {
+    const session = getCurrentSession();
+    if (session) {
+      const ws = loadUserWorkspace(session.id);
+      return ws?.channels || [];
+    }
+    return [];
+  });
+
+  const [competitors, setCompetitors] = useState<CompetitorData[]>(() => {
+    const session = getCurrentSession();
+    if (session) {
+      const ws = loadUserWorkspace(session.id);
+      return ws?.competitors || [];
+    }
+    return [];
+  });
+
+  const [scheduledPosts, setScheduledPosts] = useState<ScheduledPost[]>(() => {
+    const session = getCurrentSession();
+    if (session) {
+      const ws = loadUserWorkspace(session.id);
+      return ws?.scheduledPosts || [];
+    }
+    return [];
+  });
+
+  const [campaign, setCampaign] = useState<CampaignCreative>(() => {
+    const session = getCurrentSession();
+    if (session) {
+      const ws = loadUserWorkspace(session.id);
+      return ws?.campaign || emptyCampaign;
+    }
+    return emptyCampaign;
+  });
 
   // Modal States
-  const [isBrandModalOpen, setIsBrandModalOpen] = useState(true);
+  const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const [isSlideDeckOpen, setIsSlideDeckOpen] = useState(false);
   const [optimizationApplied, setOptimizationApplied] = useState(false);
   const [prefillTrendTopic, setPrefillTrendTopic] = useState<string | undefined>(undefined);
+
+  // Auto-persist workspace changes whenever relevant data changes
+  useEffect(() => {
+    if (currentUser) {
+      saveUserWorkspace({
+        user: currentUser,
+        brands,
+        activeBrandId: activeBrand ? activeBrand.id : null,
+        channels,
+        competitors,
+        scheduledPosts,
+        campaign,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+  }, [currentUser, brands, activeBrand, channels, competitors, scheduledPosts, campaign]);
+
+  // Auth Success Handler: Restores saved data or opens brand creation
+  const handleAuthSuccess = (user: UserProfile, isNew: boolean) => {
+    setCurrentUser(user);
+    setShowLanding(false);
+    setAuthMode(null);
+
+    const ws = loadUserWorkspace(user.id);
+    if (ws && ws.brands && ws.brands.length > 0) {
+      setBrands(ws.brands);
+      const active = ws.brands.find((b) => b.id === ws.activeBrandId) || ws.brands[0];
+      setActiveBrand(active);
+      if (ws.channels && ws.channels.length > 0) setChannels(ws.channels);
+      if (ws.competitors && ws.competitors.length > 0) setCompetitors(ws.competitors);
+      if (ws.scheduledPosts && ws.scheduledPosts.length > 0) setScheduledPosts(ws.scheduledPosts);
+      if (ws.campaign && ws.campaign.campaignName) setCampaign(ws.campaign);
+      setIsBrandModalOpen(false);
+    } else {
+      // Prompt for new brand profile
+      setIsBrandModalOpen(true);
+    }
+  };
+
+  // Logout Handler: Clears session, returns to landing, but keeps records intact
+  const handleLogout = () => {
+    clearCurrentSession();
+    setCurrentUser(null);
+    setShowLanding(true);
+    setActiveBrand(null);
+  };
 
   // Switch Brand Profile Handler
   const handleSelectBrand = (brand: BrandProfile) => {
@@ -70,8 +187,29 @@ export default function App() {
 
   // Save New Brand Profile
   const handleSaveBrand = (newBrand: BrandProfile) => {
-    setBrands((prev) => [...prev, newBrand]);
-    handleSelectBrand(newBrand);
+    let user = currentUser;
+    if (!user) {
+      const res = registerOrUpdateUser(
+        newBrand.name + ' Admin',
+        'admin@' + newBrand.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com',
+        newBrand.name
+      );
+      user = res.user;
+      setCurrentUser(user);
+    }
+    const updatedBrands = [...brands, newBrand];
+    setBrands(updatedBrands);
+    setActiveBrand(newBrand);
+    saveUserWorkspace({
+      user,
+      brands: updatedBrands,
+      activeBrandId: newBrand.id,
+      channels,
+      competitors,
+      scheduledPosts,
+      campaign,
+      updatedAt: new Date().toISOString(),
+    });
   };
 
   // One-Click ROI Optimization from Dashboard or ROI Engine
@@ -180,11 +318,7 @@ export default function App() {
         <AuthModal
           mode={authMode}
           onClose={() => setAuthMode(null)}
-          onContinue={() => {
-            setAuthMode(null);
-            setShowLanding(false);
-            setIsBrandModalOpen(true);
-          }}
+          onSuccess={handleAuthSuccess}
         />
       </>
     );
@@ -194,6 +328,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
       {activeBrand && (
         <Navbar
+          currentUser={currentUser}
           brands={brands}
           activeBrand={activeBrand}
           onSelectBrand={handleSelectBrand}
@@ -202,6 +337,7 @@ export default function App() {
           onSelectTab={setActiveTab}
           onOpenSlideDeck={() => setIsSlideDeckOpen(true)}
           onTriggerPrint={handleTriggerPrint}
+          onLogout={handleLogout}
         />
       )}
 

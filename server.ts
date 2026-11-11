@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import { GoogleGenAI } from '@google/genai';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -46,6 +46,186 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: 
   });
   return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timer));
 }
+
+// Expose Google Maps Platform key to client safely
+app.get('/api/config', (req: Request, res: Response) => {
+  res.json({
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || process.env.VITE_GOOGLE_MAPS_API_KEY || '',
+  });
+});
+
+// Server-side persistent storage file path
+const STORAGE_FILE_PATH = path.resolve(__dirname, 'data', 'omnimarket_workspace.json');
+
+async function readServerStorage(): Promise<Record<string, any>> {
+  try {
+    const data = await readFile(STORAGE_FILE_PATH, 'utf8');
+    return JSON.parse(data);
+  } catch {
+    return { users: [], workspaces: {} };
+  }
+}
+
+async function writeServerStorage(data: Record<string, any>): Promise<void> {
+  try {
+    await mkdir(path.dirname(STORAGE_FILE_PATH), { recursive: true });
+    await writeFile(STORAGE_FILE_PATH, JSON.stringify(data, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Failed to write server storage:', err);
+  }
+}
+
+// Save user workspace data
+app.post('/api/workspace/save', async (req: Request, res: Response) => {
+  try {
+    const payload = req.body;
+    if (!payload?.user?.id) {
+      return res.status(400).json({ success: false, error: 'User ID is required' });
+    }
+    const store = await readServerStorage();
+    if (!store.workspaces) store.workspaces = {};
+    store.workspaces[payload.user.id] = payload;
+
+    // Also ensure user is in users list
+    if (!store.users) store.users = [];
+    const existingIdx = store.users.findIndex((u: any) => u.id === payload.user.id || u.email === payload.user.email);
+    if (existingIdx >= 0) {
+      store.users[existingIdx] = { ...store.users[existingIdx], ...payload.user };
+    } else {
+      store.users.push(payload.user);
+    }
+
+    await writeServerStorage(store);
+    return res.json({ success: true, savedAt: new Date().toISOString() });
+  } catch (err: any) {
+    console.error('Error saving workspace:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Load user workspace data
+app.get('/api/workspace/:userId', async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const store = await readServerStorage();
+    const data = store.workspaces?.[userId] || null;
+    return res.json({ success: true, data });
+  } catch (err: any) {
+    console.error('Error loading workspace:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Google Trends Endpoint with Google Search Grounding & Regional Breakdown
+app.post('/api/ai/google-trends', async (req: Request, res: Response) => {
+  try {
+    const { query, country, region, brandName, industry } = req.body;
+    const targetCountry = country || 'Brasil';
+    const targetQuery = query || brandName || 'Tendências de Consumo';
+
+    if (!ai) {
+      return res.json({
+        success: true,
+        fallback: true,
+        data: getFallbackGoogleTrends(targetQuery, targetCountry, region),
+      });
+    }
+
+    const prompt = `Você é um diretor sênior de inteligência de busca e especialista em Google Trends.
+Pesquise dados e tendências do Google Trends e buscas reais no Google para:
+Termo/Nicho: "${targetQuery}"
+País: "${targetCountry}"
+Região/Estado de foco: "${region || 'Nacional'}"
+Setor da Marca: "${industry || 'Geral'}"
+
+Gere uma análise completa contendo:
+1. Índice de volume de busca relativo (0-100) e taxa de crescimento.
+2. Consultas em ascensão ("Breakout Queries") com porcentagem de crescimento e intenção de busca (Transacional, Comercial, Informacional ou Navegacional).
+3. Tópicos relacionados no Google Trends com pontuação de relevância.
+4. Histórico de interesse ao longo das últimas 12 semanas.
+5. Dados por países (Brasil, Estados Unidos, Reino Unido, Alemanha, Japão) e sub-regiões/estados detalhados com coordenadas de latitude/longitude e pontuação de oportunidade de 0 a 100.
+6. Recomendação tática de marketing e ROI para campanhas publicitárias.
+
+Retorne EXCLUSIVAMENTE um objeto JSON válido (dentro de bloco markdown \`\`\`json ... \`\`\`) estruturado assim:
+{
+  "query": "${targetQuery}",
+  "category": "Tendências de Busca Google",
+  "selectedCountry": "${targetCountry}",
+  "selectedRegion": "${region || 'São Paulo'}",
+  "timeRange": "Últimos 90 dias (Tempo Real)",
+  "globalInterestIndex": 94,
+  "breakoutQueries": [
+    {
+      "term": "exemplo busca em ascensao",
+      "growth": "+380%",
+      "category": "Alta Conversão",
+      "searchIntent": "Transacional"
+    }
+  ],
+  "relatedTopics": [
+    {
+      "title": "Nome do Tópico",
+      "type": "Categoria",
+      "relevanceScore": 92
+    }
+  ],
+  "interestOverTime": [
+    { "period": "Sem 1", "volume": 60 },
+    { "period": "Sem 12", "volume": 100 }
+  ],
+  "countries": [
+    {
+      "name": "Brasil",
+      "code": "BR",
+      "searchVolumeIndex": 94,
+      "growthRate": "+128%",
+      "sentiment": "Altamente Aquecido",
+      "lat": -14.235,
+      "lng": -51.9253,
+      "regions": [
+        {
+          "name": "São Paulo",
+          "code": "SP",
+          "searchVolumeIndex": 100,
+          "growthRate": "+142%",
+          "isBreakout": true,
+          "topRisingQuery": "termo em alta SP",
+          "lat": -23.5505,
+          "lng": -46.6333,
+          "opportunityScore": 98
+        }
+      ]
+    }
+  ],
+  "marketingTakeaway": "Resumo executivo do direcionamento da verba de marketing."
+}`;
+
+    const generatePromise = ai.models
+      .generateContent({
+        model: 'gemini-3.8-flash',
+        contents: prompt,
+        config: {
+          // Note: tools with googleSearch cannot be paired with responseMimeType: 'application/json'
+          tools: [{ googleSearch: {} }],
+        },
+      })
+      .then((r) => r.text || '');
+
+    const rawText = await withTimeout(generatePromise, 12000, '');
+    const parsed = rawText
+      ? cleanAndParseJSON(rawText, getFallbackGoogleTrends(targetQuery, targetCountry, region))
+      : getFallbackGoogleTrends(targetQuery, targetCountry, region);
+
+    return res.json({ success: true, data: parsed });
+  } catch (error: any) {
+    console.error('Error in /api/ai/google-trends:', error);
+    return res.json({
+      success: true,
+      fallback: true,
+      data: getFallbackGoogleTrends(req.body.query, req.body.country, req.body.region),
+    });
+  }
+});
 
 // 1. Analyze Consumer Trends
 app.post('/api/ai/trends', async (req: Request, res: Response) => {
@@ -705,6 +885,273 @@ function getFallbackAudienceSegments(brandProfile?: any, seedPersona?: string, s
       overlapPercentage: 11,
       recommendation: 'Sobreposição baixa (11%) entre os 3 segmentos. Podem ser veiculados concomitantemente sem canibalização de lances.',
     },
+  };
+}
+
+function getFallbackGoogleTrends(query?: string, country?: string, region?: string) {
+  const searchTerm = query || 'Tendências de Consumo 2026';
+  const targetCountry = country || 'Brasil';
+  return {
+    query: searchTerm,
+    category: 'Inteligência de Pesquisa Google',
+    selectedCountry: targetCountry,
+    selectedRegion: region || 'São Paulo',
+    timeRange: 'Últimos 90 dias (Tempo Real)',
+    globalInterestIndex: 94,
+    breakoutQueries: [
+      {
+        term: `${searchTerm} melhor custo benefício`,
+        growth: '+380%',
+        category: 'Busca Comercial',
+        searchIntent: 'Transacional',
+      },
+      {
+        term: `${searchTerm} cupom de desconto oficial`,
+        growth: '+490% (Breakout)',
+        category: 'Alta Conversão',
+        searchIntent: 'Transacional',
+      },
+      {
+        term: `${searchTerm} avaliações reais e teste`,
+        growth: '+270%',
+        category: 'Pesquisa Comparativa',
+        searchIntent: 'Comercial',
+      },
+      {
+        term: `marcas sustentáveis e inovadoras de ${searchTerm}`,
+        growth: '+215%',
+        category: 'Comportamental',
+        searchIntent: 'Informacional',
+      },
+      {
+        term: `lançamento oficial ${searchTerm} 2026`,
+        growth: '+185%',
+        category: 'Novidades',
+        searchIntent: 'Navegacional',
+      },
+    ],
+    relatedTopics: [
+      { title: 'Personalização com IA Preditiva', type: 'Tecnologia', relevanceScore: 96 },
+      { title: 'Social Commerce & TikTok Shop', type: 'Canal de Conversão', relevanceScore: 91 },
+      { title: 'Logística Expressa com Frete Grátis', type: 'Fator de Compra', relevanceScore: 88 },
+      { title: 'Consumo Sustentável & ESG', type: 'Valor de Marca', relevanceScore: 82 },
+      { title: 'Programas de Fidelidade & Cashback', type: 'Retenção', relevanceScore: 79 },
+    ],
+    interestOverTime: [
+      { period: 'Semana 1', volume: 64 },
+      { period: 'Semana 2', volume: 68 },
+      { period: 'Semana 3', volume: 72 },
+      { period: 'Semana 4', volume: 70 },
+      { period: 'Semana 5', volume: 78 },
+      { period: 'Semana 6', volume: 83 },
+      { period: 'Semana 7', volume: 81 },
+      { period: 'Semana 8', volume: 89 },
+      { period: 'Semana 9', volume: 86 },
+      { period: 'Semana 10', volume: 92 },
+      { period: 'Semana 11', volume: 95 },
+      { period: 'Atual', volume: 100 },
+    ],
+    countries: [
+      {
+        name: 'Brasil',
+        code: 'BR',
+        searchVolumeIndex: 96,
+        growthRate: '+135%',
+        sentiment: 'Altamente Aquecido',
+        lat: -14.235,
+        lng: -51.9253,
+        regions: [
+          {
+            name: 'São Paulo',
+            code: 'SP',
+            searchVolumeIndex: 100,
+            growthRate: '+142%',
+            isBreakout: true,
+            topRisingQuery: `${searchTerm} sp pronta entrega`,
+            lat: -23.5505,
+            lng: -46.6333,
+            opportunityScore: 99,
+          },
+          {
+            name: 'Rio de Janeiro',
+            code: 'RJ',
+            searchVolumeIndex: 88,
+            growthRate: '+118%',
+            isBreakout: false,
+            topRisingQuery: `${searchTerm} rj promoção hoje`,
+            lat: -22.9068,
+            lng: -43.1729,
+            opportunityScore: 91,
+          },
+          {
+            name: 'Minas Gerais',
+            code: 'MG',
+            searchVolumeIndex: 84,
+            growthRate: '+105%',
+            isBreakout: false,
+            topRisingQuery: `${searchTerm} bh frete grátis`,
+            lat: -19.9167,
+            lng: -43.9345,
+            opportunityScore: 87,
+          },
+          {
+            name: 'Distrito Federal',
+            code: 'DF',
+            searchVolumeIndex: 90,
+            growthRate: '+132%',
+            isBreakout: true,
+            topRisingQuery: `${searchTerm} brasília premium`,
+            lat: -15.7975,
+            lng: -47.8919,
+            opportunityScore: 93,
+          },
+          {
+            name: 'Rio Grande do Sul',
+            code: 'RS',
+            searchVolumeIndex: 80,
+            growthRate: '+95%',
+            isBreakout: false,
+            topRisingQuery: `${searchTerm} poa confiável`,
+            lat: -30.0346,
+            lng: -51.2177,
+            opportunityScore: 83,
+          },
+          {
+            name: 'Bahia',
+            code: 'BA',
+            searchVolumeIndex: 76,
+            growthRate: '+115%',
+            isBreakout: true,
+            topRisingQuery: `${searchTerm} salvador entrega express`,
+            lat: -12.9777,
+            lng: -38.5016,
+            opportunityScore: 85,
+          },
+          {
+            name: 'Paraná',
+            code: 'PR',
+            searchVolumeIndex: 78,
+            growthRate: '+94%',
+            isBreakout: false,
+            topRisingQuery: `${searchTerm} curitiba sem juros`,
+            lat: -25.4284,
+            lng: -49.2733,
+            opportunityScore: 82,
+          },
+        ],
+      },
+      {
+        name: 'Estados Unidos',
+        code: 'US',
+        searchVolumeIndex: 91,
+        growthRate: '+98%',
+        sentiment: 'Forte Expansão',
+        lat: 37.0902,
+        lng: -95.7129,
+        regions: [
+          {
+            name: 'California',
+            code: 'CA',
+            searchVolumeIndex: 98,
+            growthRate: '+125%',
+            isBreakout: true,
+            topRisingQuery: `${searchTerm} tech innovation`,
+            lat: 36.7783,
+            lng: -119.4179,
+            opportunityScore: 97,
+          },
+          {
+            name: 'New York',
+            code: 'NY',
+            searchVolumeIndex: 94,
+            growthRate: '+110%',
+            isBreakout: false,
+            topRisingQuery: `${searchTerm} fast delivery nyc`,
+            lat: 40.7128,
+            lng: -74.006,
+            opportunityScore: 94,
+          },
+          {
+            name: 'Texas',
+            code: 'TX',
+            searchVolumeIndex: 88,
+            growthRate: '+96%',
+            isBreakout: false,
+            topRisingQuery: `${searchTerm} best value online`,
+            lat: 31.9686,
+            lng: -99.9018,
+            opportunityScore: 89,
+          },
+        ],
+      },
+      {
+        name: 'Reino Unido',
+        code: 'UK',
+        searchVolumeIndex: 82,
+        growthRate: '+78%',
+        sentiment: 'Crescimento Consistente',
+        lat: 55.3781,
+        lng: -3.436,
+        regions: [
+          {
+            name: 'Greater London',
+            code: 'LDN',
+            searchVolumeIndex: 90,
+            growthRate: '+92%',
+            isBreakout: true,
+            topRisingQuery: `${searchTerm} london official store`,
+            lat: 51.5074,
+            lng: -0.1278,
+            opportunityScore: 92,
+          },
+        ],
+      },
+      {
+        name: 'Alemanha',
+        code: 'DE',
+        searchVolumeIndex: 77,
+        growthRate: '+68%',
+        sentiment: 'Mercado Maduro',
+        lat: 51.1657,
+        lng: 10.4515,
+        regions: [
+          {
+            name: 'Berlim',
+            code: 'BE',
+            searchVolumeIndex: 86,
+            growthRate: '+84%',
+            isBreakout: true,
+            topRisingQuery: `${searchTerm} nachhaltig kaufen`,
+            lat: 52.52,
+            lng: 13.405,
+            opportunityScore: 88,
+          },
+        ],
+      },
+      {
+        name: 'Japão',
+        code: 'JP',
+        searchVolumeIndex: 83,
+        growthRate: '+92%',
+        sentiment: 'Alta Adoção Tecnológica',
+        lat: 36.2048,
+        lng: 138.2529,
+        regions: [
+          {
+            name: 'Tóquio',
+            code: 'TYO',
+            searchVolumeIndex: 95,
+            growthRate: '+115%',
+            isBreakout: true,
+            topRisingQuery: `${searchTerm} 東京 最新トレンド`,
+            lat: 35.6762,
+            lng: 139.6503,
+            opportunityScore: 95,
+          },
+        ],
+      },
+    ],
+    marketingTakeaway: `Pico de interesse no Google para "${searchTerm}" concentrado nos polos urbanos (São Paulo, Rio de Janeiro e Brasília no Brasil; California e Nova York nos EUA). A intenção de busca prioritária é transacional com termos como "melhor custo benefício" e "cupom", recomendando direcionamento agressivo de verba para Google Search e campanhas de retargeting geolocalizadas nessas regiões com maior Opportunity Score.`,
   };
 }
 

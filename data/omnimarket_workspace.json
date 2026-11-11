@@ -1,0 +1,94 @@
+{
+  "users": [
+    {
+      "id": "usr_1794397030079_nwspc",
+      "name": "Bruno Moura",
+      "email": "brunodiasdemouraprofissional@gmail.com",
+      "company": "Aurora Tech",
+      "role": "Gestor de Marketing",
+      "createdAt": "2026-11-11T11:37:10.078Z",
+      "lastLoginAt": "2026-11-11T11:37:10.078Z"
+    }
+  ],
+  "workspaces": {
+    "usr_1794397030079_nwspc": {
+      "user": {
+        "id": "usr_1794397030079_nwspc",
+        "name": "Bruno Moura",
+        "email": "brunodiasdemouraprofissional@gmail.com",
+        "company": "Aurora Tech",
+        "role": "Gestor de Marketing",
+        "createdAt": "2026-11-11T11:37:10.078Z",
+        "lastLoginAt": "2026-11-11T11:37:10.078Z"
+      },
+      "brands": [
+        {
+          "id": "brand_1794397053006",
+          "name": "Aurora Cosméticos",
+          "industry": "Dermocosméticos",
+          "tagline": "Beleza limpa e inovadora",
+          "tone": "Científico e acolhedor",
+          "targetAudience": "Mulheres 25-45 anos",
+          "valueProposition": "Fórmulas veganas clinicamente testadas",
+          "monthlyBudget": 15000,
+          "currency": "BRL",
+          "accentColor": "#6366F1",
+          "logoInitial": "AU",
+          "socialHandles": {}
+        }
+      ],
+      "activeBrandId": "brand_1794397053006",
+      "channels": [],
+      "competitors": [],
+      "scheduledPosts": [],
+      "campaign": {
+        "campaignName": "",
+        "tagline": "",
+        "concept": "",
+        "channels": {
+          "instagram": {
+            "hook": "",
+            "caption": "",
+            "cta": "",
+            "hashtags": []
+          },
+          "tiktok": {
+            "hook": "",
+            "caption": "",
+            "cta": ""
+          },
+          "linkedin": {
+            "headline": "",
+            "copy": "",
+            "cta": ""
+          },
+          "googleAds": {
+            "headlines": [],
+            "descriptions": []
+          }
+        },
+        "designDirectives": {
+          "productDesign": {
+            "concept": "",
+            "colorPalette": [],
+            "visualStyle": "",
+            "recommendedElements": []
+          },
+          "adBannerCreative": {
+            "mainHeadline": "",
+            "badgeText": "",
+            "ctaButtonText": "",
+            "visualPrompt": ""
+          }
+        },
+        "abTestVariants": [],
+        "expectedMetrics": {
+          "estimatedCTR": "",
+          "estimatedCPA": "",
+          "projectedROAS": ""
+        }
+      },
+      "updatedAt": "2026-11-11T11:37:41.644Z"
+    }
+  }
+}

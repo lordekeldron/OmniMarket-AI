@@ -2,5 +2,8 @@
   "name": "OmniMarket AI - Especialista em Marketing & Otimização de ROI",
   "description": "Plataforma de inteligência de marketing com análise de tendências de consumo, campanhas automatizadas, design de produtos e anúncios, otimização preditiva de ROI, monitoramento de concorrentes, automação de redes sociais e relatórios em PDF e slides.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API",
+    "MAJOR_CAPABILITY_GOOGLE_MAPS_API"
+  ]
 }

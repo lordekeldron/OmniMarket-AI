@@ -121,6 +121,7 @@ export const TrendsView: React.FC<TrendsViewProps> = ({
 
       <GlobalTrendHeatmap
         brand={brand}
+        onSelectTrendForCampaign={onSelectTrendForCampaign}
         onFocusTopic={(topic) => {
           const query: Record<string, string> = {
             'Vídeo curto': 'Reels',

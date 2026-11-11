@@ -8,6 +8,42 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@360;420;520;600;700&display=swap" rel="stylesheet" />
+    <script>
+      // Global Three.js r170 frustum culling polyfill for all 3D scene objects
+      if (typeof Object.prototype !== 'undefined' && !Object.prototype.intersectsFrustum) {
+        Object.defineProperty(Object.prototype, 'intersectsFrustum', {
+          value: function (frustum) {
+            if (frustum && typeof frustum.intersectsObject === 'function') {
+              try {
+                return frustum.intersectsObject(this);
+              } catch (e) {
+                return true;
+              }
+            }
+            return true;
+          },
+          writable: true,
+          configurable: true,
+          enumerable: false,
+        });
+      }
+      // Global Three.js r170 determinantAffine polyfill for Matrix4 compatibility
+      if (typeof Object.prototype !== 'undefined' && !Object.prototype.determinantAffine) {
+        Object.defineProperty(Object.prototype, 'determinantAffine', {
+          value: function () {
+            const te = this.elements;
+            if (!te || te.length < 11) return 1;
+            const n11 = te[0], n12 = te[4], n13 = te[8];
+            const n21 = te[1], n22 = te[5], n23 = te[9];
+            const n31 = te[2], n32 = te[6], n33 = te[10];
+            return n11 * (n22 * n33 - n23 * n32) - n12 * (n21 * n33 - n23 * n31) + n13 * (n21 * n32 - n22 * n31);
+          },
+          writable: true,
+          configurable: true,
+          enumerable: false,
+        });
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
